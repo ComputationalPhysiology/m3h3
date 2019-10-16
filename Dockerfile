@@ -12,4 +12,5 @@ RUN apt-get -qq update && \
 RUN pip install --upgrade pip
 
 # Install required cardiac modelling packages
+RUN pip install git+https://github.com/ComputationalPhysiology/fenics-geometry.git
 RUN pip install fenics-pulse
