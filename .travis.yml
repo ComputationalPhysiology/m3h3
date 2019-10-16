@@ -39,5 +39,4 @@ install:
   - conda info -a
 
 script:
-  - cd tests
-  - pytest .
+  - pytest tests/.
