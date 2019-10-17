@@ -33,6 +33,7 @@ install:
 
   # Activate environment
   - source activate m3h3
+  - pip install git+https://github.com/ComputationalPhysiology/fenics-geometry.git
   - python setup.py install
 
   # Useful for debugging any issues with conda
