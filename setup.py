@@ -8,5 +8,5 @@ setup(name='m3h3',
       author_email='alexandra@simula.no',
       license='BSD3',
       packages=['m3h3'],
-      install_requires=['fenics', 'fenics-pulse'],
+      install_requires=['pytest', 'fenics-geometry', 'fenics'],
       zip_safe=False)
