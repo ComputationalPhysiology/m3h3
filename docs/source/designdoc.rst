@@ -5,7 +5,7 @@ This page outlines the design specification that M3H3 is built against.
 
 
 Physiological basis
-======================
+-----------------------
 
 Historically, the physiology of the heart has mostly been studied in separation to resolve specific questions related to either electrophysiology, soft tissue mechanics or hemodynamics. However, in reality, the different branches of physics that involved in the functioning of the heart in health as well as disease, are highly interconnected, both across spatial and time scales.
 
@@ -15,7 +15,7 @@ Some of these interactions have a larger influence on other interactions than ot
 
 
 Software design
-=======================
+---------------------
 
 Parts of the problem have been tackled before, and we have the following FEniCS based software available:
 
@@ -29,67 +29,64 @@ M3H3 specifically does *not* aim at reinventing the wheel, and therefore it will
 
 
 Architecture
--------------------
+^^^^^^^^^^^^^^^^
 
-```
-from dolfin import *
-from geometry import *
+::
+  from dolfin import *
+  from geometry import *
 
-class M3H3(object)
+  class M3H3(object)
 
-	class Parameters (object)
-	class Problem(object)
+  	class Parameters (object)
+  	class Problem(object)
 
-		class ElectroProblem(Problem): import cbcbeat
-		class SolidProblem(Problem): import pulse
-		class FluidProblem(Problem): import oasis
-		class PorousProblem(Problem): import perspect
+  		class ElectroProblem(Problem): import cbcbeat
+  		class SolidProblem(Problem): import pulse
+  		class FluidProblem(Problem): import oasis
+  		class PorousProblem(Problem): import perspect
 
 
-	class Interaction(object)
+  	class Interaction(object)
 
-	class Solver(object)
-  
-		class ElectroSolver(Solver): import cbcbeat
-		class SolidSolver(Solver): import pulse
-		class FluidSolver(Solver): import oasis
-		class PorousSolver(Solver): import perspect
-```
+  	class Solver(object)
+
+  		class ElectroSolver(Solver): import cbcbeat
+  		class SolidSolver(Solver): import pulse
+  		class FluidSolver(Solver): import oasis
+  		class PorousSolver(Solver): import perspect
 
 
 User interface
-=======================
+------------------------
 
-M3H3's "hello world" will consist of setting up an simulation of electrophysiology driven contraction:
+M3H3's "hello world" will consist of setting up an simulation of electrophysiology driven contraction::
 
-```
-from m3h3 import *
-from geometry import *
+  from m3h3 import *
+  from geometry import *
 
-# Load a heart mesh including markers and marker functions
-# from file
-geo = HeartGeometry.load_from_file(‘heart_mesh.h5’)
+  # Load a heart mesh including markers and marker functions
+  # from file
+  geo = HeartGeometry.load_from_file(‘heart_mesh.h5’)
 
-# By instantiating parameters of a certain physics module we
-# tell m3h3 which physics to involve in the simulation. In
-# this case we are only interested in simulating EP and soft
-# tissue dyamics at the continuum level.
-electro_params = Parameters.ep_default_parameters()
-solid_params = Parameters.solid_default_parameters()
+  # By instantiating parameters of a certain physics module we
+  # tell m3h3 which physics to involve in the simulation. In
+  # this case we are only interested in simulating EP and soft
+  # tissue dyamics at the continuum level.
+  electro_params = Parameters.ep_default_parameters()
+  solid_params = Parameters.solid_default_parameters()
 
-# The user specifies the interactions included in the
-# simulation by instantiating Interaction objects
-ep2solid = Interaction(“ep”, “solid”)
+  # The user specifies the interactions included in the
+  # simulation by instantiating Interaction objects
+  ep2solid = Interaction(“ep”, “solid”)
 
-# Once all physics and interactions are defined we can
-# instantiate the M3H3 object
-m3h3 = M3H3(geo, electro_params, solid_params, fluid_params, porous_params, ep2solid, solid2fluid, solid2porous)
+  # Once all physics and interactions are defined we can
+  # instantiate the M3H3 object
+  m3h3 = M3H3(geo, electro_params, solid_params, fluid_params, porous_params, ep2solid, solid2fluid, solid2porous)
 
-# Loop over time
-for t in time:
-	# do some preprocessing
+  # Loop over time
+  for t in time:
+  	# do some preprocessing
 
-	m2h2.solve()
+  	m2h2.solve()
 
-  # do some postprocessing, for example saving to file
-```
+    # do some postprocessing, for example saving to file
