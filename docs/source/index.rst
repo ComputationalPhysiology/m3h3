@@ -11,6 +11,8 @@ Welcome to M3H3's documentation!
    :caption: Contents:
 
    designdoc
+   m3h3
+   modules
 
    .. mdinclude:: ../../README.md
 
@@ -20,6 +22,5 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`m3h3`
-* :ref:`modules`
+* :ref:`modindex`
 * :ref:`search`
