@@ -11,6 +11,10 @@ Welcome to M3H3's documentation!
    :caption: Contents:
 
    designdoc
+   m3h3
+   modules
+
+   .. mdinclude:: ../../README.md
 
 
 

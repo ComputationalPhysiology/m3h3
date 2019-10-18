@@ -1,0 +1,22 @@
+m3h3 package
+============
+
+Submodules
+----------
+
+m3h3.parameters module
+----------------------
+
+.. automodule:: m3h3.parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: m3h3
+   :members:
+   :undoc-members:
+   :show-inheritance:
