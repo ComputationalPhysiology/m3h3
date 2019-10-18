@@ -12,11 +12,14 @@ Welcome to M3H3's documentation!
 
    designdoc
 
+   .. mdinclude:: ../../README.md
+
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
+* :ref:`m3h3`
+* :ref:`modules`
 * :ref:`search`
