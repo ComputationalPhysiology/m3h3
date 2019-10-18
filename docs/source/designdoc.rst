@@ -32,6 +32,7 @@ Architecture
 ^^^^^^^^^^^^^^^^
 
 ::
+
   from dolfin import *
   from geometry import *
 
@@ -81,7 +82,8 @@ M3H3's "hello world" will consist of setting up an simulation of electrophysiolo
 
   # Once all physics and interactions are defined we can
   # instantiate the M3H3 object
-  m3h3 = M3H3(geo, electro_params, solid_params, fluid_params, porous_params, ep2solid, solid2fluid, solid2porous)
+  m3h3 = M3H3(geo, electro_params, solid_params, fluid_params
+          porous_params, ep2solid, solid2fluid, solid2porous)
 
   # Loop over time
   for t in time:
