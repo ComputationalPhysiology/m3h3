@@ -12,6 +12,18 @@ matrix:
         - os: linux
           python: 3.7
 
+# blocklist
+branches:
+  except:
+  - docs
+  - experimental
+
+# safelist
+branches:
+  only:
+  - master
+  - stable
+
 
 install:
   - sudo apt-get update
