@@ -1,4 +1,4 @@
 pytest
-fenics
+sphinx
 --no-binary=h5py
 h5py
