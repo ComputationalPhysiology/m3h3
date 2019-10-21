@@ -8,14 +8,14 @@ Welcome to M3H3's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   :caption: Contents
    designdoc
-   m3h3
+   readme
+   changelog
+
+   :caption: API documentation
    modules
-
-   .. mdinclude:: ../../README.md
-
 
 
 Indices and tables
