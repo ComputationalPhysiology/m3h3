@@ -8,11 +8,13 @@ Welcome to M3H3's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   :caption: Contents
    designdoc
    readme
    changelog
+
+   :caption: API documentation
    modules
 
 
