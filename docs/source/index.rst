@@ -11,11 +11,9 @@ Welcome to M3H3's documentation!
    :caption: Contents:
 
    designdoc
-   m3h3
+   readme
+   changelog
    modules
-
-   .. mdinclude:: ../../README.md
-
 
 
 Indices and tables

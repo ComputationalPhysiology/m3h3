@@ -10,9 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../../m3h3'))
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +22,7 @@ copyright = '2019, Alexandra K. Diem'
 author = 'Alexandra K. Diem'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = '2019.1.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -33,24 +33,22 @@ release = '0.1.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'm2r'
+    'm2r',
 ]
+
+autodoc_mock_imports = ["dolfin", "mpi4py", "h5py"]
 
 napoleon_google_docstring = False
 napoleon_use_param = False
 napoleon_use_ivar = True
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
-
 source_suffix = ['.rst', '.md']
 
 master_doc = 'index'
+
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
