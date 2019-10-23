@@ -4,10 +4,10 @@ m3h3 package
 Submodules
 ----------
 
-m3h3.parameters module
-----------------------
+m3h3.setup\_parameters module
+-----------------------------
 
-.. automodule:: m3h3.parameters
+.. automodule:: m3h3.setup_parameters
    :members:
    :undoc-members:
    :show-inheritance:
