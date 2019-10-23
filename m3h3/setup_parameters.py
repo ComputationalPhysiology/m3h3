@@ -25,7 +25,7 @@ def set_dolfin_compiler_parameters():
 def set_electro_default_parameters():
     """Sets default parameters for electrophysiology problems.
     """
-    electro = df.Parameters("Electro")
+    electro = df.Parameters(Physics.ELECTRO)
     parameters.add(electro)
     return electro
 
@@ -33,7 +33,7 @@ def set_electro_default_parameters():
 def set_solid_default_parameters():
     """Sets default parameters for solid mechanics problems.
     """
-    solid = df.Parameters("Solid")
+    solid = df.Parameters(Physics.SOLID)
     parameters.add(solid)
     return solid
 
@@ -41,7 +41,7 @@ def set_solid_default_parameters():
 def set_fluid_default_parameters():
     """Sets default parameters for fluid dynamics problems.
     """
-    fluid = df.Parameters("Fluid")
+    fluid = df.Parameters(Physics.FLUID)
     parameters.add(fluid)
     return fluid
 
@@ -49,6 +49,6 @@ def set_fluid_default_parameters():
 def set_porous_default_parameters():
     """Sets default parameters for porous mechanics problems.
     """
-    porous = df.Parameters("Porous")
+    porous = df.Parameters(Physics.POROUS)
     parameters.add(porous)
     return porous
