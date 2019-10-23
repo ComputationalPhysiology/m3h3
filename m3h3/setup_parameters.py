@@ -1,7 +1,15 @@
+from enum import Enum
+
 import dolfin as df
 from dolfin import Parameters, LogLevel
 
 parameters = df.Parameters("M3H3")
+
+class Physics(Enum):
+    ELECTRO = "Electro"
+    SOLID = "Solid"
+    FLUID = "Fluid"
+    POROUS = "Porous"
 
 
 def set_dolfin_compiler_parameters():
