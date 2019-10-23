@@ -16,13 +16,12 @@ matrix:
 branches:
   except:
   - docs
-  - experimental
+  - develop
 
 # safelist
 branches:
   only:
   - master
-  - stable
 
 
 install:
