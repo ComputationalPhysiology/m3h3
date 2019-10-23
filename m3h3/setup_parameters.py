@@ -19,6 +19,7 @@ def set_electro_default_parameters():
     """
     electro = df.Parameters("Electro")
     parameters.add(electro)
+    return electro
 
 
 def set_solid_default_parameters():
@@ -26,6 +27,7 @@ def set_solid_default_parameters():
     """
     solid = df.Parameters("Solid")
     parameters.add(solid)
+    return solid
 
 
 def set_fluid_default_parameters():
@@ -33,6 +35,7 @@ def set_fluid_default_parameters():
     """
     fluid = df.Parameters("Fluid")
     parameters.add(fluid)
+    return fluid
 
 
 def set_porous_default_parameters():
@@ -40,3 +43,4 @@ def set_porous_default_parameters():
     """
     porous = df.Parameters("Porous")
     parameters.add(porous)
+    return porous
