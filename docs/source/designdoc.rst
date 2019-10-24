@@ -57,7 +57,7 @@ Architecture
 
 
 User interface
-------------------------
+^^^^^^^^^^^^^^^^
 
 M3H3's "hello world" will consist of setting up an simulation of electrophysiology driven contraction::
 
@@ -77,11 +77,13 @@ M3H3's "hello world" will consist of setting up an simulation of electrophysiolo
 
   # The user specifies the interactions included in the
   # simulation by instantiating Interaction objects
-  ep2solid = Interaction(“ep”, “solid”)
+  ep2solid = m3h3.Interaction(Physics.ELECTRO, Physics.SOLID)
 
   # Once all physics and interactions are defined we can
-  # instantiate the M3H3 object
-  m3h3 = M3H3(geo, electro_params, solid_params, ep2solid)
+  # instantiate the M3H3 object. The M3H3 object infers from
+  # the ´set_physics_default_parameters´ functions that have
+  # been called, which physics the user would like to run.
+  m3h3 = M3H3(geo, interactions=[ep2solid])
 
   # Loop over time
   for t in time:
@@ -93,7 +95,7 @@ M3H3's "hello world" will consist of setting up an simulation of electrophysiolo
 
 
 Parameters
----------------
+^^^^^^^^^^^^
 
 Parameters are handled through `dolfin`'s Parameter class. The module `setup_parameters.py` instantiates a `dolfin.Parameters` object at runtime::
 
@@ -112,3 +114,14 @@ The module `setup_parameters.py` also contains methods to set up default physics
     porous_params = m3h3.set_porous_default_parameters()
 
 M3H3 infers from the instantiated physics parameter objects which physics the user would like to run in their simulation.
+
+
+Physics Enumerator
+^^^^^^^^^^^^^^^^^^^^
+
+M3H3 contains a Python enumerator object `Physics`, which contains placeholders for the physics labels used by M3H3. These are currently
+
+- `Physics.ELECTRO`: electrodynamics
+- `Physics.SOLID`: solid mechanics
+- `Physics.FLUID`: fluid dynamics
+- `Physics.POROUS`: porous mechanics
