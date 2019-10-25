@@ -38,7 +38,6 @@ Architecture
 
   class M3H3(object)
 
-  	class Parameters (object)
   	class Problem(object)
 
   		class ElectroProblem(Problem): import cbcbeat
@@ -58,11 +57,11 @@ Architecture
 
 
 User interface
-------------------------
+^^^^^^^^^^^^^^^^
 
 M3H3's "hello world" will consist of setting up an simulation of electrophysiology driven contraction::
 
-  from m3h3 import *
+  import m3h3
   from geometry import *
 
   # Load a heart mesh including markers and marker functions
@@ -73,17 +72,18 @@ M3H3's "hello world" will consist of setting up an simulation of electrophysiolo
   # tell m3h3 which physics to involve in the simulation. In
   # this case we are only interested in simulating EP and soft
   # tissue dyamics at the continuum level.
-  electro_params = Parameters.ep_default_parameters()
-  solid_params = Parameters.solid_default_parameters()
+  electro_params = m3h3.set_electro_default_parameters()
+  solid_params = m3h3.set_solid_default_parameters()
 
   # The user specifies the interactions included in the
   # simulation by instantiating Interaction objects
-  ep2solid = Interaction(“ep”, “solid”)
+  ep2solid = m3h3.Interaction(Physics.ELECTRO, Physics.SOLID)
 
   # Once all physics and interactions are defined we can
-  # instantiate the M3H3 object
-  m3h3 = M3H3(geo, electro_params, solid_params, fluid_params
-          porous_params, ep2solid, solid2fluid, solid2porous)
+  # instantiate the M3H3 object. The M3H3 object infers from
+  # the ´set_physics_default_parameters´ functions that have
+  # been called, which physics the user would like to run.
+  m3h3 = M3H3(geo, interactions=[ep2solid])
 
   # Loop over time
   for t in time:
@@ -92,3 +92,36 @@ M3H3's "hello world" will consist of setting up an simulation of electrophysiolo
   	m2h2.solve()
 
     # do some postprocessing, for example saving to file
+
+
+Parameters
+^^^^^^^^^^^^
+
+Parameters are handled through `dolfin`'s Parameter class. The module `setup_parameters.py` instantiates a `dolfin.Parameters` object at runtime::
+
+    parameters = dolfin.Parameters("M3H3")
+
+that is accessible from within `m3h3`::
+
+    import m3h3
+    params = m3h3.parameters
+
+The module `setup_parameters.py` also contains methods to set up default physics parameters that can be called by the user and return their respective `dolfin.Parameters` object::
+
+    electro_params = m3h3.set_electro_default_parameters()
+    solid_params = m3h3.set_solid_default_parameters()
+    fluid_params = m3h3.set_fluid_default_parameters()
+    porous_params = m3h3.set_porous_default_parameters()
+
+M3H3 infers from the instantiated physics parameter objects which physics the user would like to run in their simulation.
+
+
+Physics Enumerator
+^^^^^^^^^^^^^^^^^^^^
+
+M3H3 contains a Python enumerator object `Physics`, which contains placeholders for the physics labels used by M3H3. These are currently
+
+- `Physics.ELECTRO`: electrodynamics
+- `Physics.SOLID`: solid mechanics
+- `Physics.FLUID`: fluid dynamics
+- `Physics.POROUS`: porous mechanics
