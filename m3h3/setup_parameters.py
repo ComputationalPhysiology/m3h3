@@ -1,7 +1,16 @@
+from enum import Enum
+
 import dolfin as df
 from dolfin import Parameters, LogLevel
 
-parameters = df.Parameters("M3H3")
+import m3h3
+
+
+class Physics(Enum):
+    ELECTRO = "Electro"
+    SOLID = "Solid"
+    FLUID = "Fluid"
+    POROUS = "Porous"
 
 
 def set_dolfin_compiler_parameters():
@@ -17,30 +26,34 @@ def set_dolfin_compiler_parameters():
 def set_electro_default_parameters():
     """Sets default parameters for electrophysiology problems.
     """
-    electro = df.Parameters("Electro")
-    parameters.add(electro)
+    electro = df.Parameters(Physics.ELECTRO.value)
+    m3h3.parameters.add(electro)
     return electro
 
 
 def set_solid_default_parameters():
     """Sets default parameters for solid mechanics problems.
     """
-    solid = df.Parameters("Solid")
-    parameters.add(solid)
+    solid = df.Parameters(Physics.SOLID.value)
+    m3h3.parameters.add(solid)
     return solid
 
 
 def set_fluid_default_parameters():
     """Sets default parameters for fluid dynamics problems.
     """
-    fluid = df.Parameters("Fluid")
-    parameters.add(fluid)
+    fluid = df.Parameters(Physics.FLUID.value)
+    m3h3.parameters.add(fluid)
     return fluid
 
 
 def set_porous_default_parameters():
     """Sets default parameters for porous mechanics problems.
     """
-    porous = df.Parameters("Porous")
-    parameters.add(porous)
+    porous = df.Parameters(Physics.POROUS.value)
+    m3h3.parameters.add(porous)
     return porous
+
+
+def reset_m3h3_parameters():
+    m3h3.parameters = df.Parameters("M3H3")
