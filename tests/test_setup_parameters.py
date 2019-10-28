@@ -1,5 +1,5 @@
-import m3h3
 import dolfin as df
+import m3h3
 
 
 def test_set_dolfin_compiler_parameters():
@@ -11,24 +11,28 @@ def test_set_dolfin_compiler_parameters():
 
 
 def test_set_electro_default_parameters():
+    m3h3.reset_m3h3_parameters()
     assert "Electro" not in m3h3.parameters.keys()
     m3h3.set_electro_default_parameters()
     assert "Electro" in m3h3.parameters.keys()
 
 
 def test_set_solid_default_parameters():
+    m3h3.reset_m3h3_parameters()
     assert "Solid" not in m3h3.parameters.keys()
     m3h3.set_solid_default_parameters()
     assert "Solid" in m3h3.parameters.keys()
 
 
 def test_set_fluid_default_parameters():
+    m3h3.reset_m3h3_parameters()
     assert "Fluid" not in m3h3.parameters.keys()
     m3h3.set_fluid_default_parameters()
     assert "Fluid" in m3h3.parameters.keys()
 
 
 def test_set_porous_default_parameters():
+    m3h3.reset_m3h3_parameters()
     assert "Porous" not in m3h3.parameters.keys()
     m3h3.set_porous_default_parameters()
     assert "Porous" in m3h3.parameters.keys()
