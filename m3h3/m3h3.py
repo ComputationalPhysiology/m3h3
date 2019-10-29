@@ -1,6 +1,10 @@
 import numpy as np
 
 from m3h3 import parameters, Physics
+from m3h3.problem.electro_problem import ElectroProblem
+from m3h3.problem.solid_problem import SolidProblem
+from m3h3.problem.fluid_problem import FluidProblem
+from m3h3.problem.porous_problem import PorousProblem
 
 
 class M3H3(object):
@@ -8,13 +12,13 @@ class M3H3(object):
     def __init__(self, geometry, interactions=[]):
         physics = [Physics(p) for p in parameters.keys()]
         if Physics.ELECTRO in physics:
-            self.setup_electro_problem()
+            self.setup_electro_problem(parameters[Physics.ELECTRO.value])
         if Physics.SOLID in physics:
-            self.setup_solid_problem()
+            self.setup_solid_problem(parameters[Physics.ELECTRO.value])
         if Physics.FLUID in physics:
-            self.setup_fluid_problem()
+            self.setup_fluid_problem(parameters[Physics.ELECTRO.value])
         if Physics.POROUS in physics:
-            self.setup_porous_problem()
+            self.setup_porous_problem(parameters[Physics.ELECTRO.value])
 
         # If multiple physics are defined, check that all are involved in an
         # interaction and that physics involved in an interaction are set up
@@ -33,17 +37,21 @@ class M3H3(object):
                     raise KeyError(msg)
 
 
-    def setup_electro_problem(self):
-        pass
+    def setup_electro_problem(self, parameter):
+        self.electro_problem = ElectroProblem(parameter)
 
 
-    def setup_solid_problem(self):
-        pass
+    def setup_solid_problem(self, parameter):
+        self.solid_problem = SolidProblem(parameter)
 
 
-    def setup_fluid_problem(self):
-        pass
+    def setup_fluid_problem(self, parameter):
+        self.fluid_problem = FluidProblem(parameter)
 
 
-    def setup_porous_problem(self):
+    def setup_porous_problem(self, parameter):
+        self.porous_problem = PorousProblem(parameter)
+
+
+    def solve():
         pass
