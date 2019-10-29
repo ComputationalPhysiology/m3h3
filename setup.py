@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 
 setup(name='m3h3',
       version='0.1',
@@ -7,5 +7,5 @@ setup(name='m3h3',
       author='Alexandra K. Diem',
       author_email='alexandra@simula.no',
       license='BSD3',
-      packages=['m3h3'],
+      packages=find_namespace_packages(),
       zip_safe=False)
