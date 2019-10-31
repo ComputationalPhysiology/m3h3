@@ -1,7 +1,7 @@
 from enum import Enum
 
 import dolfin as df
-from dolfin import Parameters, LogLevel
+from dolfin import (LogLevel, LUSolver, Parameters, PETScKrylovSolver)
 
 import m3h3
 
@@ -11,6 +11,10 @@ class Physics(Enum):
     SOLID = "Solid"
     FLUID = "Fluid"
     POROUS = "Porous"
+
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
 
 
 def set_dolfin_compiler_parameters():
@@ -23,36 +27,114 @@ def set_dolfin_compiler_parameters():
     df.parameters["form_compiler"]["cpp_optimize_flags"] = " ".join(flags)
 
 
-def set_electro_default_parameters():
-    """Sets default parameters for electrophysiology problems.
+def set_default_parameters():
+    m3h3.parameters.add("log_level", df.get_log_level())
+    m3h3.log(m3h3.parameters["log_level"], "Log level is set to {}".format(
+        m3h3.parameters["log_level"]
+    ))
+
+
+def set_electro_parameters(parameters=None):
+    """Sets parameters for electrophysiology problems and solver. If argument
+    is None, default parameters are applied
     """
-    electro = df.Parameters(Physics.ELECTRO.value)
-    m3h3.parameters.add(electro)
-    return electro
+    if Physics.ELECTRO.value not in m3h3.parameters.keys():
+        _set_electro_default_parameters()
+
+    if parameters is not None:
+        try:
+            m3h3.parameters[Physics.ELECTRO.value].update(parameters)
+        except:
+            msg = "'{}' contains invalid parameter keywords.".format(parameters)
+            raise NameError(msg)
+    return m3h3.parameters[Physics.ELECTRO.value]
 
 
-def set_solid_default_parameters():
+def set_solid_parameters(parameters=None):
     """Sets default parameters for solid mechanics problems.
     """
-    solid = df.Parameters(Physics.SOLID.value)
-    m3h3.parameters.add(solid)
-    return solid
+    if Physics.SOLID.value not in m3h3.parameters.keys():
+        _set_solid_default_parameters()
+
+    if parameters is not None:
+        try:
+            m3h3.parameters[Physics.SOLID.value].update(parameters)
+        except:
+            msg = "'{}' contains invalid parameter keywords.".format(parameters)
+            raise NameError(msg)
+    return m3h3.parameters[Physics.SOLID.value]
 
 
-def set_fluid_default_parameters():
+def set_fluid_parameters(parameters=None):
     """Sets default parameters for fluid dynamics problems.
     """
-    fluid = df.Parameters(Physics.FLUID.value)
-    m3h3.parameters.add(fluid)
-    return fluid
+    if Physics.FLUID.value not in m3h3.parameters.keys():
+        _set_fluid_default_parameters()
+
+    if parameters is not None:
+        try:
+            m3h3.parameters[Physics.FLUID.value].update(parameters)
+        except:
+            msg = "'{}' contains invalid parameter keywords.".format(parameters)
+            raise NameError(msg)
+    return m3h3.parameters[Physics.FLUID.value]
 
 
-def set_porous_default_parameters():
+def set_porous_parameters(parameters=None):
     """Sets default parameters for porous mechanics problems.
     """
+    if Physics.POROUS.value not in m3h3.parameters.keys():
+        _set_porous_default_parameters()
+
+    if parameters is not None:
+        try:
+            m3h3.parameters[Physics.POROUS.value].update(parameters)
+        except:
+            msg = "'{}' contains invalid parameter keywords.".format(parameters)
+            raise NameError(msg)
+    return m3h3.parameters[Physics.POROUS.value]
+
+
+def _set_electro_default_parameters():
+    electro = df.Parameters(Physics.ELECTRO.value)
+
+    # Set default parameters
+    electro.add("enable_adjoint", False)
+    electro.add("theta", 0.5)
+    electro.add("polynomial_degree", 1)
+
+    # Set default solver type to be iterative
+    electro.add("linear_solver_type", "iterative")
+    electro.add("use_avg_u_constraint", False)
+
+    # Set default iterative solver choices (used if iterative
+    # solver is invoked)
+    electro.add("algorithm", "cg")
+    electro.add("preconditioner", "petsc_amg")
+
+    # Add default parameters from both LU and Krylov solvers
+    electro.add(LUSolver.default_parameters())
+    electro.add(PETScKrylovSolver.default_parameters())
+
+    m3h3.parameters.add(electro)
+
+
+def _set_solid_default_parameters():
+    solid = df.Parameters(Physics.SOLID.value)
+    solid.add("dummy_parameter", False)
+    m3h3.parameters.add(solid)
+
+
+def _set_fluid_default_parameters():
+    fluid = df.Parameters(Physics.FLUID.value)
+    fluid.add("dummy_parameter", False)
+    m3h3.parameters.add(fluid)
+
+
+def _set_porous_default_parameters():
     porous = df.Parameters(Physics.POROUS.value)
+    porous.add("dummy_parameter", False)
     m3h3.parameters.add(porous)
-    return porous
 
 
 def reset_m3h3_parameters():
