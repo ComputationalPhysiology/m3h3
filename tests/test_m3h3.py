@@ -13,12 +13,11 @@ def test_m3h3(geo):
         assert M3H3(geo, interactions=[ia2])
         assert M3H3(geo, interactions=[ia1])
     assert M3H3(geo)
-    set_electro_default_parameters()
-    set_solid_default_parameters()
+    set_electro_parameters()
+    set_solid_parameters()
     with raises(Exception):
         assert M3H3(geo, interactions=[ia1, ia2])
         assert M3H3(geo, interactions=[ia2])
-    print(parameters.keys())
     assert M3H3(geo, interactions=[ia1])
 
 
