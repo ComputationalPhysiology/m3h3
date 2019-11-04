@@ -15,8 +15,8 @@ def test_set_dolfin_compiler_parameters():
 def test_set_electro_parameters():
     m3h3.reset_m3h3_parameters()
     assert m3h3.Physics.ELECTRO.value not in m3h3.parameters.keys()
-    theta = 0.1
-    parameter = {"theta": theta}
+    dt = 0.1
+    parameter = {"dt": dt}
     m3h3.set_electro_parameters(parameters=parameter)
     assert m3h3.Physics.ELECTRO.value in m3h3.parameters.keys()
     assert m3h3.parameters[m3h3.Physics.ELECTRO.value]["theta"] == theta
