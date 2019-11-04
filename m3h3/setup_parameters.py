@@ -3,6 +3,8 @@ from enum import Enum
 import dolfin as df
 from dolfin import (LogLevel, LUSolver, Parameters, PETScKrylovSolver)
 
+import cbcbeat
+
 import m3h3
 
 
@@ -11,6 +13,9 @@ class Physics(Enum):
     SOLID = "Solid"
     FLUID = "Fluid"
     POROUS = "Porous"
+
+    def __str__(self):
+        return self.value
 
     @classmethod
     def has_value(cls, value):
@@ -115,6 +120,8 @@ def _set_electro_default_parameters():
     # Add default parameters from both LU and Krylov solvers
     electro.add(LUSolver.default_parameters())
     electro.add(PETScKrylovSolver.default_parameters())
+
+    electro.add(cbcbeat.SplittingSolver.default_parameters())
 
     m3h3.parameters.add(electro)
 
