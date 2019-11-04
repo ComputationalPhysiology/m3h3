@@ -37,6 +37,8 @@ class M3H3(object):
                             "interaction.".format(p)
                     raise KeyError(msg)
 
+        self.interval = (parameters['start_time'], parameters['end_time'])
+
         if Physics.ELECTRO in physics:
             self._setup_electro_problem(parameters[str(Physics.ELECTRO)])
         if Physics.SOLID in physics:
@@ -45,6 +47,17 @@ class M3H3(object):
             self._setup_fluid_problem(parameters[str(Physics.FLUID)])
         if Physics.POROUS in physics:
             self._setup_porous_problem(parameters[str(Physics.POROUS)])
+
+
+    def solver(self):
+        if self.electro_problem:
+            return self.electro_problem.solver()
+        if self.solid_problem:
+            return self.solid_problem.solver()
+        if self.fluid_problem:
+            return self.fluid_problem.solver()
+        if self.porous_problem:
+            return self.porous_problem.solver()
 
 
     def _setup_geometries(self, geometry, physics):
@@ -66,7 +79,7 @@ class M3H3(object):
 
     def _setup_electro_problem(self, parameter):
         self.electro_problem = ElectroProblem(self.geometries[Physics.ELECTRO],
-                                                parameter)
+                                                parameter, self.interval)
 
 
     def _setup_solid_problem(self, parameter):
@@ -82,7 +95,3 @@ class M3H3(object):
     def _setup_porous_problem(self, parameter):
         self.porous_problem = PorousProblem(self.geometries[Physics.POROUS],
                                                 parameter)
-
-
-    def solve(self):
-        pass
