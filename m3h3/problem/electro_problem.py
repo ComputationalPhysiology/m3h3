@@ -1,23 +1,35 @@
-from dolfin import (FiniteElement, FunctionSpace)
+from dolfin import (Constant)
 
-import dolfin as df
+import cbcbeat
 
 from m3h3.problem.problem import Problem
 
 
 class ElectroProblem(Problem):
 
-    def __init__(self, geometry, parameters, *args, **kwargs):
-        super().__init__(geometry, *args, **kwargs)
+    def __init__(self, geometry, parameters, interval, **kwargs):
+        super().__init__(geometry, interval, **kwargs)
         self.parameters = parameters
+        mesh = geometry.mesh
 
-        # Create function spaces
-        self._init_spaces()
+        M_i = self.parameters['Mi']
+        M_e = self.parameters['Me']
+
+        self.interval = interval
+        time = Constant(self.interval[0])
+
+        self.cell_model = cbcbeat.Tentusscher_panfilov_2006_epi_cell()
+        cardiac_model = cbcbeat.CardiacModel(mesh, time, M_i, M_e,
+                                                self.cell_model)
+        self.epsolver = cbcbeat.SplittingSolver(cardiac_model,
+                                    params=self.parameters['SplittingSolver'])
+        self._set_initial_conditions()
 
 
-    def _init_spaces(self):
-        k = self.parameters["polynomial_degree"]
-        Ve = FiniteElement("CG", self.mesh.ufl_cell(), k)
-        V = FunctionSpace(self.mesh, "CG", k)
-        Ue = FiniteElement("CG", self.mesh.ufl_cell(), k)
-        U = FunctionSpace(self.mesh, "CG", k)
+    def solver(self):
+        return self.epsolver.solve(self.interval, self.parameters['dt'])
+
+
+    def _set_initial_conditions(self):
+        (vs_, vs, vur) = self.epsolver.solution_fields()
+        vs_.assign(self.cell_model.initial_conditions())

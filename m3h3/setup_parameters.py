@@ -3,6 +3,8 @@ from enum import Enum
 import dolfin as df
 from dolfin import (LogLevel, LUSolver, Parameters, PETScKrylovSolver)
 
+import cbcbeat
+
 import m3h3
 
 
@@ -11,6 +13,9 @@ class Physics(Enum):
     SOLID = "Solid"
     FLUID = "Fluid"
     POROUS = "Porous"
+
+    def __str__(self):
+        return self.value
 
     @classmethod
     def has_value(cls, value):
@@ -32,6 +37,8 @@ def set_default_parameters():
     m3h3.log(m3h3.parameters["log_level"], "Log level is set to {}".format(
         m3h3.parameters["log_level"]
     ))
+    m3h3.parameters.add("start_time", 0.0)
+    m3h3.parameters.add("end_time", 1.0)
 
 
 def set_electro_parameters(parameters=None):
@@ -99,22 +106,24 @@ def _set_electro_default_parameters():
     electro = df.Parameters(Physics.ELECTRO.value)
 
     # Set default parameters
-    electro.add("enable_adjoint", False)
-    electro.add("theta", 0.5)
+    electro.add("dt", 1e-3)
     electro.add("polynomial_degree", 1)
-
-    # Set default solver type to be iterative
-    electro.add("linear_solver_type", "iterative")
-    electro.add("use_avg_u_constraint", False)
-
-    # Set default iterative solver choices (used if iterative
-    # solver is invoked)
-    electro.add("algorithm", "cg")
-    electro.add("preconditioner", "petsc_amg")
+    electro.add("Mi", 1.0)
+    electro.add("Me", 2.0)
 
     # Add default parameters from both LU and Krylov solvers
     electro.add(LUSolver.default_parameters())
     electro.add(PETScKrylovSolver.default_parameters())
+
+    electro.add(cbcbeat.SplittingSolver.default_parameters())
+    electro["SplittingSolver"]["theta"] = 0.5
+    electro["SplittingSolver"]["pde_solver"] = "bidomain"
+    electro["SplittingSolver"]["CardiacODESolver"]["scheme"] = "RL1"
+    electro["SplittingSolver"]["BidomainSolver"]["linear_solver_type"] =\
+                                                                    "iterative"
+    electro["SplittingSolver"]["BidomainSolver"]["algorithm"] = "cg"
+    electro["SplittingSolver"]["BidomainSolver"]["preconditioner"] = "petsc_amg"
+    electro["SplittingSolver"]["enable_adjoint"] = False
 
     m3h3.parameters.add(electro)
 

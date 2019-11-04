@@ -47,6 +47,7 @@ install:
   - pip uninstall h5py
   - pip install -r requirements.txt
   - pip install git+https://github.com/ComputationalPhysiology/fenics-geometry.git
+  - pip install hg+https://bitbucket.org/meg/cbcbeat
   - python setup.py install
 
   # Useful for debugging any issues with conda

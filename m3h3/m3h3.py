@@ -18,36 +18,46 @@ class M3H3(object):
 
         self._setup_geometries(geometry, physics)
 
-        if Physics.ELECTRO in physics:
-            self._setup_electro_problem(parameters[Physics.ELECTRO.value])
-        if Physics.SOLID in physics:
-            self._setup_solid_problem(parameters[Physics.ELECTRO.value])
-        if Physics.FLUID in physics:
-            self._setup_fluid_problem(parameters[Physics.ELECTRO.value])
-        if Physics.POROUS in physics:
-            self._setup_porous_problem(parameters[Physics.ELECTRO.value])
-
         # If multiple physics are defined, check that all are involved in an
         # interaction and that physics involved in an interaction are set up
         if len(physics) == 0 and len(interactions) > 0:
-            msg = "At least one interaction has been set up, but no physics\nInteractions: {}".format(interactions)
+            msg = "At least one interaction has been set up, but no physics\n"\
+                    "Interactions: {}".format(interactions)
             raise KeyError(msg)
         if len(physics) > 1:
             int_physics = set(np.array([ia.to_list() for ia in interactions]).flat)
             for p in int_physics:
-                print(p)
                 if p not in physics:
-                    msg = "Physics {} appears in interaction, but is not set up.".format(p)
+                    msg = "Physics {} appears in interaction, but is not set "\
+                            "up.".format(p)
                     raise KeyError(msg)
             for p in physics:
                 if p not in int_physics:
-                    msg = "Physcis {} is set up, but does not appear in any interaction.".format(p)
+                    msg = "Physcis {} is set up, but does not appear in any "\
+                            "interaction.".format(p)
                     raise KeyError(msg)
 
-        if 'starttime' in parameters.keys():
-            self.time = Constant(float(parameters['starttime']))
-        else:
-            self.time = Constant(0.0)
+        self.interval = (parameters['start_time'], parameters['end_time'])
+
+        if Physics.ELECTRO in physics:
+            self._setup_electro_problem(parameters[str(Physics.ELECTRO)])
+        if Physics.SOLID in physics:
+            self._setup_solid_problem(parameters[str(Physics.SOLID)])
+        if Physics.FLUID in physics:
+            self._setup_fluid_problem(parameters[str(Physics.FLUID)])
+        if Physics.POROUS in physics:
+            self._setup_porous_problem(parameters[str(Physics.POROUS)])
+
+
+    def solver(self):
+        if self.electro_problem:
+            return self.electro_problem.solver()
+        if self.solid_problem:
+            return self.solid_problem.solver()
+        if self.fluid_problem:
+            return self.fluid_problem.solver()
+        if self.porous_problem:
+            return self.porous_problem.solver()
 
 
     def _setup_geometries(self, geometry, physics):
@@ -58,9 +68,10 @@ class M3H3(object):
                 try:
                     self.geometries[phys] = geometry.geometries[phys.value]
                 except KeyError:
-                    msg = s("Could not find a geometry for", phys.value,
-                            " physics in MultiGeometry. Ensure that geometry",
-                            " labels correspond to values in Physics enum.")
+                    msg = "Could not find a geometry for {} physics in "\
+                            "MultiGeometry. Ensure that geometry labels "\
+                            "correspond to values in Physics "\
+                            "enum.".format(phys.value)
         else:
             for phys in physics:
                 self.geometries[phys] = geometry.copy(deepcopy=True)
@@ -68,7 +79,7 @@ class M3H3(object):
 
     def _setup_electro_problem(self, parameter):
         self.electro_problem = ElectroProblem(self.geometries[Physics.ELECTRO],
-                                                parameter)
+                                                parameter, self.interval)
 
 
     def _setup_solid_problem(self, parameter):
@@ -84,7 +95,3 @@ class M3H3(object):
     def _setup_porous_problem(self, parameter):
         self.porous_problem = PorousProblem(self.geometries[Physics.POROUS],
                                                 parameter)
-
-
-    def solve():
-        pass
