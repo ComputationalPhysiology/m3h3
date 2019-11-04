@@ -19,7 +19,7 @@ def test_set_electro_parameters():
     parameter = {"dt": dt}
     m3h3.set_electro_parameters(parameters=parameter)
     assert m3h3.Physics.ELECTRO.value in m3h3.parameters.keys()
-    assert m3h3.parameters[m3h3.Physics.ELECTRO.value]["theta"] == theta
+    assert m3h3.parameters[m3h3.Physics.ELECTRO.value]["dt"] == dt
     parameter = {'invalid_parameter': True}
     with raises(Exception):
         m3h3.set_electro_parameters(parameters=parameter)
