@@ -58,9 +58,10 @@ class M3H3(object):
                 try:
                     self.geometries[phys] = geometry.geometries[phys.value]
                 except KeyError:
-                    msg = s("Could not find a geometry for", phys.value,
-                            " physics in MultiGeometry. Ensure that geometry",
-                            " labels correspond to values in Physics enum.")
+                    msg = "Could not find a geometry for {} physics in "\
+                            "MultiGeometry. Ensure that geometry labels "\
+                            "correspond to values in Physics "\
+                            "enum.".format(phys.value)
         else:
             for phys in physics:
                 self.geometries[phys] = geometry.copy(deepcopy=True)
@@ -86,5 +87,5 @@ class M3H3(object):
                                                 parameter)
 
 
-    def solve():
+    def solve(self):
         pass
