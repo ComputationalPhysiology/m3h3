@@ -35,7 +35,6 @@ class M3H3(object):
         if len(physics) > 1:
             int_physics = set(np.array([ia.to_list() for ia in interactions]).flat)
             for p in int_physics:
-                print(p)
                 if p not in physics:
                     msg = "Physics {} appears in interaction, but is not set up.".format(p)
                     raise KeyError(msg)
