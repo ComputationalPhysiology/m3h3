@@ -84,7 +84,7 @@ class M3H3(object):
 
     def _setup_solid_problem(self, parameter):
         self.solid_problem = SolidProblem(self.geometries[Physics.SOLID],
-                                                parameter)
+                                                parameter, self.interval)
 
 
     def _setup_fluid_problem(self, parameter):
