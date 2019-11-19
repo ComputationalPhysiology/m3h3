@@ -23,13 +23,13 @@ class ElectroProblem(Problem):
                                                 self.cell_model)
         self.epsolver = cbcbeat.SplittingSolver(cardiac_model,
                                     params=self.parameters['SplittingSolver'])
-        self._set_initial_conditions()
+        self.set_initial_conditions()
 
 
     def solver(self):
         return self.epsolver.solve(self.interval, self.parameters['dt'])
 
 
-    def _set_initial_conditions(self):
+    def set_initial_conditions(self):
         (vs_, vs, vur) = self.epsolver.solution_fields()
         vs_.assign(self.cell_model.initial_conditions())

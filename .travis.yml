@@ -48,6 +48,7 @@ install:
   - pip install -r requirements.txt
   - pip install git+https://github.com/ComputationalPhysiology/fenics-geometry.git
   - pip install hg+https://bitbucket.org/meg/cbcbeat
+  - pip install git+https://github.com/finsberg/pulse.git
   - python setup.py install
 
   # Useful for debugging any issues with conda
