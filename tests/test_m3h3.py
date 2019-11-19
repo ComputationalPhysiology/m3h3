@@ -21,6 +21,20 @@ def test_m3h3(geo):
     assert M3H3(geo, interactions=[ia1])
 
 
+def test_solve(m3h3):
+    solutions = m3h3.solver()
+    dt = parameters['Electro']['dt']
+    time_range = m3h3.interval[1]-m3h3.interval[0]
+    steps = int(time_range/dt)
+    assert len(solutions) == steps
+
+
+@fixture
+def m3h3(geo):
+    ia = Interaction(Physics.ELECTRO, Physics.SOLID)
+    return M3H3(geo, interactions=[ia])
+
+
 @fixture
 def geo():
     mesh = df.UnitSquareMesh(2, 2)
