@@ -15,6 +15,7 @@ class M3H3(object):
 
     def __init__(self, geometry, interactions=[]):
         self.physics = [Physics(p) for p in parameters.keys() if Physics.has_value(p)]
+        physics = self.physics
 
         self._setup_geometries(geometry, physics)
 
