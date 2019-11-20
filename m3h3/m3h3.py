@@ -14,7 +14,8 @@ from m3h3.problem.porous_problem import PorousProblem
 class M3H3(object):
 
     def __init__(self, geometry, interactions=[]):
-        physics = [Physics(p) for p in parameters.keys() if Physics.has_value(p)]
+        self.physics = [Physics(p) for p in parameters.keys() if Physics.has_value(p)]
+        physics = self.physics
 
         self._setup_geometries(geometry, physics)
 
@@ -47,6 +48,10 @@ class M3H3(object):
             self._setup_fluid_problem(parameters[str(Physics.FLUID)])
         if Physics.POROUS in physics:
             self._setup_porous_problem(parameters[str(Physics.POROUS)])
+
+
+    def get_physics(self):
+        return self.physics
 
 
     def solver(self):
