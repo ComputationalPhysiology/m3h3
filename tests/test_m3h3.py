@@ -22,10 +22,12 @@ def test_m3h3(geo):
 
 
 def test_solve(m3h3):
-    solutions = m3h3.solver()
     dt = parameters['Electro']['dt']
     time_range = m3h3.interval[1]-m3h3.interval[0]
     steps = int(time_range/dt)
+    solutions = []
+    for solution in m3h3.solver():
+        solutions.append(solution)
     assert len(solutions) == steps
 
 

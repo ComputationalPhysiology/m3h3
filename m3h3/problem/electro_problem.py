@@ -32,8 +32,7 @@ class ElectroProblem(Problem):
         steps = int(time_range/dt)
         solutions = []
         for step in range(steps):
-            solutions.append(self.solve_time_step())
-        return solutions
+             yield self.solve_time_step()
 
 
     def solve_time_step(self):
