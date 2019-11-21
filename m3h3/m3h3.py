@@ -5,9 +5,10 @@ from dolfin import (Constant)
 from geometry import Geometry, MultiGeometry
 
 from m3h3 import parameters, Physics
-
 from m3h3.problem import (ElectroProblem, SolidProblem, FluidProblem,
                         PorousProblem)
+from m3h3.solver import (ElectroSolver, SolidSolver, FluidSolver,
+                        PorousSolver)
 
 
 class M3H3(object):

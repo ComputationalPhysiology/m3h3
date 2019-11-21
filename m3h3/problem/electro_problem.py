@@ -3,7 +3,7 @@ from dolfin import (Constant)
 import cbcbeat
 
 from m3h3 import parameters, Physics
-from m3h3.problem.problem import Problem
+from m3h3.problem import Problem
 
 
 class ElectroProblem(Problem):
