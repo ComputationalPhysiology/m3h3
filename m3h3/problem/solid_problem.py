@@ -7,16 +7,8 @@ from m3h3.problem.problem import Problem
 
 class SolidProblem(Problem):
 
-    def __init__(self, geometry, parameters, interval, **kwargs):
-        super().__init__(geometry, interval, **kwargs)
-        self.parameters = parameters
-        mesh = geometry.mesh
-
-        self.solidsolver = None
-
-
-    def solver(self):
-        return self.epsolver.solve(self.interval, self.parameters['dt'])
+    def __init__(self, geometry, time, *args, **kwargs):
+        super().__init__(geometry, time, **kwargs)
 
 
     def set_initial_conditions(self):

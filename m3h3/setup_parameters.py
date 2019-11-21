@@ -108,8 +108,9 @@ def _set_electro_default_parameters():
     # Set default parameters
     electro.add("dt", 1e-3)
     electro.add("polynomial_degree", 1)
-    electro.add("Mi", 1.0)
-    electro.add("Me", 2.0)
+    electro.add("M_i", 1.0)
+    electro.add("M_e", 2.0)
+    electro.add("cell_model", "Tentusscher_panfilov_2006_M_cell")
 
     # Add default parameters from both LU and Krylov solvers
     electro.add(LUSolver.default_parameters())
