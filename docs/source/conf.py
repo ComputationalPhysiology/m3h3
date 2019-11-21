@@ -41,7 +41,7 @@ extensions = [
 ]
 
 autodoc_mock_imports = ["dolfin", "mpi4py", "h5py", "pulse", "fenics-geometry",
-                        "cbcbeat"]
+                        "cbcbeat", "numpy"]
 
 napoleon_google_docstring = False
 napoleon_use_param = False
