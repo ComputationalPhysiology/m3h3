@@ -40,7 +40,8 @@ extensions = [
     'm2r',
 ]
 
-autodoc_mock_imports = ["dolfin", "mpi4py", "h5py", "pulse", "fenics-geometry"]
+autodoc_mock_imports = ["dolfin", "mpi4py", "h5py", "pulse", "fenics-geometry",
+                        "cbcbeat"]
 
 napoleon_google_docstring = False
 napoleon_use_param = False
