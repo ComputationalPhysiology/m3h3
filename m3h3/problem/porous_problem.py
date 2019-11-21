@@ -5,5 +5,5 @@ from m3h3.problem.problem import Problem
 
 class PorousProblem(Problem):
 
-    def __init__(self, geometry, parameters, *args, **kwargs):
-        pass
+    def __init__(self, geometry, time, *args, **kwargs):
+        super().__init__(geometry, time, **kwargs)

@@ -5,10 +5,9 @@ from dolfin import (Constant)
 from geometry import Geometry, MultiGeometry
 
 from m3h3 import parameters, Physics
-from m3h3.problem.electro_problem import ElectroProblem
-from m3h3.problem.solid_problem import SolidProblem
-from m3h3.problem.fluid_problem import FluidProblem
-from m3h3.problem.porous_problem import PorousProblem
+
+from m3h3.problem import (ElectroProblem, SolidProblem, FluidProblem,
+                        PorousProblem)
 
 
 class M3H3(object):
@@ -37,7 +36,7 @@ class M3H3(object):
                             "interaction.".format(p)
                     raise KeyError(msg)
 
-        self.interval = (parameters['start_time'], parameters['end_time'])
+        self.time = Constant(parameters['start_time'])
 
         if Physics.ELECTRO in physics:
             self._setup_electro_problem(parameters[str(Physics.ELECTRO)])
@@ -51,13 +50,13 @@ class M3H3(object):
 
     def solver(self):
         if self.electro_problem:
-            return self.electro_problem.solver()
+            self.electro_solver = self.electro_problem.solver()
         if self.solid_problem:
-            return self.solid_problem.solver()
+            self.solid_solver = self.solid_problem.solver()
         if self.fluid_problem:
-            return self.fluid_problem.solver()
+            self.fluid_solver = self.fluid_problem.solver()
         if self.porous_problem:
-            return self.porous_problem.solver()
+            self.porous_solver = self.porous_problem.solver()
 
 
     def _setup_geometries(self, geometry, physics):
@@ -79,19 +78,19 @@ class M3H3(object):
 
     def _setup_electro_problem(self, parameter):
         self.electro_problem = ElectroProblem(self.geometries[Physics.ELECTRO],
-                                                parameter, self.interval)
+                                                self.time)
 
 
     def _setup_solid_problem(self, parameter):
         self.solid_problem = SolidProblem(self.geometries[Physics.SOLID],
-                                                parameter, self.interval)
+                                                self.time)
 
 
     def _setup_fluid_problem(self, parameter):
         self.fluid_problem = FluidProblem(self.geometries[Physics.FLUID],
-                                                parameter)
+                                                self.time)
 
 
     def _setup_porous_problem(self, parameter):
         self.porous_problem = PorousProblem(self.geometries[Physics.POROUS],
-                                                parameter)
+                                                self.time)
