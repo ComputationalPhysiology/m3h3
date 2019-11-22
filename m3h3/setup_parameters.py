@@ -87,7 +87,7 @@ class Parameters(df.Parameters):
 
 
     def _set_electro_default_parameters(self):
-        electro = Parameters(Physics.ELECTRO.value)
+        electro = df.Parameters(Physics.ELECTRO.value)
 
         # Set default parameters
         electro.add("dt", 1e-3)
@@ -114,22 +114,18 @@ class Parameters(df.Parameters):
 
 
     def _set_solid_default_parameters(self):
-        solid = Parameters(Physics.SOLID.value)
+        solid = df.Parameters(Physics.SOLID.value)
         solid.add("dummy_parameter", False)
         self.add(solid)
 
 
     def _set_fluid_default_parameters(self):
-        fluid = Parameters(Physics.FLUID.value)
+        fluid = df.Parameters(Physics.FLUID.value)
         fluid.add("dummy_parameter", False)
         self.add(fluid)
 
 
     def _set_porous_default_parameters(self):
-        porous = Parameters(Physics.POROUS.value)
+        porous = df.Parameters(Physics.POROUS.value)
         porous.add("dummy_parameter", False)
         self.add(porous)
-
-
-    def reset_m3h3_parameters():
-        self.parameters = Parameters("M3H3")

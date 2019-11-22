@@ -31,19 +31,47 @@ class M3H3(object):
             self.parameters.set_porous_parameters()
 
         self._setup_geometries(geometry, physics)
-
         self.time = Constant(self.parameters['start_time'])
+        self._setup_problems()
+        self._setup_solvers()
 
 
     def solver(self):
-        if self.electro_problem:
-            self.electro_solver = self.electro_problem.solver()
-        if self.solid_problem:
-            self.solid_solver = self.solid_problem.solver()
-        if self.fluid_problem:
-            self.fluid_solver = self.fluid_problem.solver()
-        if self.porous_problem:
-            self.porous_solver = self.porous_problem.solver()
+        yield {}, {}
+
+
+    def _setup_problems(self):
+        if Physics.ELECTRO in self.physics:
+            self.electro_problem = ElectroProblem(self.geometries[Physics.ELECTRO],
+                                        self.time, self.parameters[str(Physics.ELECTRO)])
+        if Physics.SOLID in self.physics:
+            self.solid_problem = SolidProblem(self.geometries[Physics.SOLID], 
+                                        self.time, self.parameters[str(Physics.SOLID)])
+        if Physics.FLUID in self.physics:
+            self.fluid_problem = FluidProblem(self.geometries[Physics.FLUID],
+                                        self.time, self.parameters[str(Physics.FLUID)])
+        if Physics.POROUS in self.physics:
+            self.porous_problem = PorousProblem(self.goemetries[Physics.POROUS],
+                                        self.time, self.parameters[str(Physics.POROUS)])
+
+
+    def _setup_solvers(self):
+        if Physics.ELECTRO in self.physics or\
+                                "Eletro" in self.physics:
+            self.electro_solver = ElectroSolver(
+                    self.electro_problem._form, self.time)
+        if Physics.SOLID in self.physics or\
+                                "Solid" in self.physics:
+            self.solid_solver = SolidSolver(
+                    self.solid_problem._form, self.time)
+        if Physics.FLUID in self.physics or\
+                                "Fluid" in self.physics:
+            self.fluid_solver = FluidSolver(
+                    self.fluid_problem._form, self.time)
+        if Physics.POROUS in self.physics or\
+                                "Porous" in self.physics:
+            self.porous_solver = PorousSolver(
+                    self.porous_problem._form, self.time)
 
 
     def _setup_geometries(self, geometry, physics):
@@ -105,12 +133,12 @@ class M3H3(object):
                                                 self.time)
 
 
-    def update_parameters(self, physics, new_parameters):
+    def update_parameters(self, physics, parameters):
         if physics == Physics.ELECTRO:
-            self.parameters.set_electro_parameters(new_parameters)
+            self.parameters.set_electro_parameters(parameters)
         elif physics == Physics.SOLID:
-            self.parameters.set_solid_parameters(new_parameters)
+            self.parameters.set_solid_parameters(parameters)
         elif physics == Physics.FLUID:
-            self.parameters.set_fluid_parameters(new_parameters)
+            self.parameters.set_fluid_parameters(parameters)
         elif physics == Physics.POROUS:
-            self.parameters.set_porous_parameters(new_parameters)
+            self.parameters.set_porous_parameters(parameters)
