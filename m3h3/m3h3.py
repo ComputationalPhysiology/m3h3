@@ -31,7 +31,6 @@ class M3H3(object):
             self.parameters.set_porous_parameters()
 
         self._setup_geometries(geometry, physics)
-
         self.time = Constant(self.parameters['start_time'])
 
 
@@ -105,12 +104,12 @@ class M3H3(object):
                                                 self.time)
 
 
-    def update_parameters(self, physics, new_parameters):
+    def update_parameters(self, physics, parameters):
         if physics == Physics.ELECTRO:
-            self.parameters.set_electro_parameters(new_parameters)
+            self.parameters.set_electro_parameters(parameters)
         elif physics == Physics.SOLID:
-            self.parameters.set_solid_parameters(new_parameters)
+            self.parameters.set_solid_parameters(parameters)
         elif physics == Physics.FLUID:
-            self.parameters.set_fluid_parameters(new_parameters)
+            self.parameters.set_fluid_parameters(parameters)
         elif physics == Physics.POROUS:
-            self.parameters.set_porous_parameters(new_parameters)
+            self.parameters.set_porous_parameters(parameters)
