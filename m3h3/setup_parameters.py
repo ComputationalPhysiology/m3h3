@@ -129,7 +129,3 @@ class Parameters(df.Parameters):
         porous = Parameters(Physics.POROUS.value)
         porous.add("dummy_parameter", False)
         self.add(porous)
-
-
-    def reset_m3h3_parameters():
-        self.parameters = Parameters("M3H3")
