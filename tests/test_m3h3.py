@@ -17,6 +17,14 @@ def test_m3h3(geo):
     assert m
 
 
+def test_setup_problems(m3h3):
+    assert m3h3.electro_problem
+    assert m3h3.solid_problem
+    with raises(Exception):
+        m3h3.fluid_problem
+        m3h3.porous_problem
+
+
 def test_solve(m3h3):
     # TODO:
     pass
