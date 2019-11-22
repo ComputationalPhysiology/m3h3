@@ -1,6 +1,6 @@
 from dolfin import (Constant)
 
-from m3h3 import parameters, Physics
+from m3h3 import Physics
 from m3h3.solver import Solver
 
 

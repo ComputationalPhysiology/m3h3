@@ -9,16 +9,12 @@ def test_m3h3(geo):
     ia1 = Interaction(Physics.ELECTRO, Physics.SOLID)
     ia2 = Interaction(Physics.SOLID, Physics.FLUID)
     with raises(Exception):
-        assert M3H3(geo, interactions=[ia1, ia2])
-        assert M3H3(geo, interactions=[ia2])
-        assert M3H3(geo, interactions=[ia1])
-    assert M3H3(geo)
-    set_electro_parameters()
-    set_solid_parameters()
-    with raises(Exception):
-        assert M3H3(geo, interactions=[ia1, ia2])
-        assert M3H3(geo, interactions=[ia2])
-    assert M3H3(geo, interactions=[ia1])
+        M3H3(geo, physics=[Physics.ELECTRO, Physics.SOLID],
+                                                    interactions=[ia1, ia2])
+        M3H3(geo, physics=[Physics.ELECTRO], interactions=[ia2])
+        M3H3(geo, physics=[Physics.ELECTRO], interactions=[ia1])
+    m = M3H3(geo, physics=[Physics.ELECTRO, Physics.SOLID])
+    assert m
 
 
 def test_solve(m3h3):
@@ -29,7 +25,8 @@ def test_solve(m3h3):
 @fixture
 def m3h3(geo):
     ia = Interaction(Physics.ELECTRO, Physics.SOLID)
-    return M3H3(geo, interactions=[ia])
+    physics = [Physics.ELECTRO, Physics.SOLID]
+    return M3H3(geo, physics, interactions=[ia])
 
 
 @fixture
