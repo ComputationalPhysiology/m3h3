@@ -2,7 +2,7 @@ from dolfin import (Constant)
 
 import cbcbeat
 
-from m3h3 import parameters, Physics
+from m3h3 import Physics
 from m3h3.solver import Solver
 
 
