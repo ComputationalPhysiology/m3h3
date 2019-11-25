@@ -22,6 +22,14 @@ class Physics(Enum):
         return value in cls._value2member_map_
 
 
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+
+    def __hash__(self):
+        return hash(str(self))
+
+
 def set_dolfin_compiler_parameters():
     """Sets dolfin parameters to speed up the compiler.
     """
