@@ -64,18 +64,27 @@ class M3H3(object):
 
 
     def _setup_solvers(self):
+        interval = (self.parameters['start_time'], self.parameters['end_time'])
         if Physics.ELECTRO in self.physics:
             self.electro_solver = ElectroSolver(
-                    self.electro_problem._form, self.time)
+                                    self.electro_problem._form, self.time,
+                                    interval,
+                                    self.parameters[str(Physics.ELECTRO)]['dt'])
         if Physics.SOLID in self.physics:
             self.solid_solver = SolidSolver(
-                    self.solid_problem._form, self.time)
+                                    self.solid_problem._form, self.time,
+                                    interval,
+                                    self.parameters[str(Physics.SOLID)]['dt'])
         if Physics.FLUID in self.physics:
             self.fluid_solver = FluidSolver(
-                    self.fluid_problem._form, self.time)
+                                    self.fluid_problem._form, self.time,
+                                    interval,
+                                    self.parameters[str(Physics.FLUID)]['dt'])
         if Physics.POROUS in self.physics:
             self.porous_solver = PorousSolver(
-                    self.porous_problem._form, self.time)
+                                    self.porous_problem._form, self.time,
+                                    interval
+                                    self.parameters[str(Physics.POROUS)]['dt'])
 
 
     def _setup_geometries(self, geometry, physics):
