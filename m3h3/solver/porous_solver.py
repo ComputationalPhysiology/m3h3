@@ -6,5 +6,5 @@ from m3h3.solver import Solver
 
 class PorousSolver(Solver):
 
-    def __init__(self, form, time, interval, dt, **kwargs):
-        super().__init__(form, time, interval, dt, **kwargs)
+    def __init__(self, form, time, interval, dt, parameters, **kwargs):
+        super().__init__(form, time, interval, dt, parameters, **kwargs)
