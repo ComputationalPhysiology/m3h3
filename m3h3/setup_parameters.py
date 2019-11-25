@@ -125,6 +125,15 @@ class Parameters(df.Parameters):
         solid = df.Parameters(Physics.SOLID.value)
         solid.add("dt", 1e-3)
         solid.add("dummy_parameter", False)
+
+        # Add default parameters from both LU and Krylov solvers
+        solid.add(LUSolver.default_parameters())
+        solid.add(PETScKrylovSolver.default_parameters())
+
+        # Add solver parameters
+        solid.add(df.Parameters("Solver"))
+        solid["Solver"].add("dummy_parameter", False)
+
         self.add(solid)
 
 
@@ -132,6 +141,15 @@ class Parameters(df.Parameters):
         fluid = df.Parameters(Physics.FLUID.value)
         fluid.add("dt", 1e-3)
         fluid.add("dummy_parameter", False)
+
+        # Add default parameters from both LU and Krylov solvers
+        fluid.add(LUSolver.default_parameters())
+        fluid.add(PETScKrylovSolver.default_parameters())
+
+        # Add solver parameters
+        fluid.add(df.Parameters("Solver"))
+        fluid["Solver"].add("dummy_parameter", False)
+
         self.add(fluid)
 
 
@@ -139,4 +157,13 @@ class Parameters(df.Parameters):
         porous = df.Parameters(Physics.POROUS.value)
         porous.add("dt", 1e-3)
         porous.add("dummy_parameter", False)
+
+        # Add default parameters from both LU and Krylov solvers
+        porous.add(LUSolver.default_parameters())
+        porous.add(PETScKrylovSolver.default_parameters())
+
+        # Add solver parameters
+        porous.add(df.Parameters("Solver"))
+        porous["Solver"].add("dummy_parameter", False)
+
         self.add(porous)

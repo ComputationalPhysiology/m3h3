@@ -39,27 +39,29 @@ class M3H3(object):
 
     def step(self):
         # Setup time stepping if running step function for the first time.
-        if time == self.parameters['start_time']:
-            self.num_steps = self._get_num_steps()
+        if self.time.values()[0] == self.parameters['start_time']:
+            self.num_steps, self.max_dt = self._get_num_steps()
             
         solution_fields = []
         if Physics.ELECTRO in self.physics:
-            for step in self.num_steps[Physics.ELECTRO]:
+            for step in range(self.num_steps[Physics.ELECTRO]):
                 solution = self.electro_solver.step()
             solution_fields.append(solution)
         if Physics.SOLID in self.physics:
-            for step in self.num_steps[Physics.SOLID]:
+            for step in range(self.num_steps[Physics.SOLID]):
                 solution = self.solid_solver.step()
             solution_fields.append(solution)
         if Physics.FLUID in self.physics:
-            for step in self.num_steps[Physics.FLUID]:
+            for step in range(self.num_steps[Physics.FLUID]):
                 solution = self.fluid_solver.step()
             solution_fields.append(solution)
         if Physics.POROUS in self.physics:
-            for step in self.num_steps[Physics.POROUS]:
+            for step in range(self.num_steps[Physics.POROUS]):
                 solution = self.porous_solver.step()
             solution_fields.append(solution)
-        return solution_fields
+        time = self.time
+        self.time += self.max_dt
+        return time, solution_fields
 
 
     def _get_num_steps(self):
@@ -83,7 +85,7 @@ class M3H3(object):
             dt = dt_physics[Physics.POROUS]
             if self._check_dt_is_multiple(dt, min_dt):
                 num_steps[Physics.POROUS] = int(dt/min_dt)
-        return num_steps
+        return num_steps, max_dt
 
 
     def _check_dt_is_multiple(self, dt, min_dt):
@@ -97,14 +99,14 @@ class M3H3(object):
 
     def _get_physics_dt(self):
         dt = {}
-        if Physics.ELECTRO in physics:
-            dt[Physics.ELECTRO] = self.parameters[Physics.ELECTRO]['dt']
-        if Physics.SOLID in physics:
-            dt[Physics.SOLID] = self.parameters[Physics.SOLID]['dt']
-        if Physics.FLUID in physics:
-            dt[Physics.FLUID] = self.parameters[Physics.FLUID]['dt']
-        if Physics.POROUS in physics:
-            dt[Physics.POROUS] = self.parameters[Physics.POROUS]['dt']
+        if Physics.ELECTRO in self.physics:
+            dt[Physics.ELECTRO] = self.parameters[str(Physics.ELECTRO)]['dt']
+        if Physics.SOLID in self.physics:
+            dt[Physics.SOLID] = self.parameters[str(Physics.SOLID)]['dt']
+        if Physics.FLUID in self.physics:
+            dt[Physics.FLUID] = self.parameters[str(Physics.FLUID)]['dt']
+        if Physics.POROUS in self.physics:
+            dt[Physics.POROUS] = self.parameters[str(Physics.POROUS)]['dt']
         return dt
 
 
@@ -134,25 +136,25 @@ class M3H3(object):
     def _setup_solvers(self):
         interval = (self.parameters['start_time'], self.parameters['end_time'])
         if Physics.ELECTRO in self.physics:
+            parameters = self.parameters[str(Physics.ELECTRO)]
             self.electro_solver = ElectroSolver(
                                     self.electro_problem._form, self.time,
-                                    interval,
-                                    self.parameters[str(Physics.ELECTRO)]['dt'])
+                                    interval, parameters['dt'], parameters)
         if Physics.SOLID in self.physics:
+            parameters = self.parameters[str(Physics.SOLID)]
             self.solid_solver = SolidSolver(
                                     self.solid_problem._form, self.time,
-                                    interval,
-                                    self.parameters[str(Physics.SOLID)]['dt'])
+                                    interval, parameters['dt'], parameters)
         if Physics.FLUID in self.physics:
+            parameters = self.parameters[str(Physics.FLUID)]
             self.fluid_solver = FluidSolver(
                                     self.fluid_problem._form, self.time,
-                                    interval,
-                                    self.parameters[str(Physics.FLUID)]['dt'])
+                                    interval, parameters['dt'], parameters)
         if Physics.POROUS in self.physics:
+            parameters = self.parameters[str(Physics.POROUS)]
             self.porous_solver = PorousSolver(
                                     self.porous_problem._form, self.time,
-                                    interval,
-                                    self.parameters[str(Physics.POROUS)]['dt'])
+                                    interval, parameters['dt'], parameters)
 
 
     def _setup_geometries(self, geometry, physics):
