@@ -36,8 +36,17 @@ class M3H3(object):
         self._setup_solvers()
 
 
-    def solver(self):
-        yield {}, {}
+    def step(self):
+        solution_fields = []
+        if Physics.ELECTRO in self.physics:
+            solution_fields.append(self.electro_solver.step())
+        if Physics.SOLID in self.physics:
+            solution_fields.append(self.solid_solver.step())
+        if Physics.FLUID in self.physics:
+            solution_fields.append(self.fluid_solver.step())
+        if Physics.POROUS in self.physics:
+            solution_fields.append(self.porous_solver.step())
+        return solution_fields
 
 
     def _setup_problems(self):
