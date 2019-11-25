@@ -13,8 +13,7 @@ class ElectroSolver(Solver):
 
 
     def _init_solver(self):
-        self.solver = cbcbeat.SplittingSolver(self._form,
-                                    params=self.parameters['SplittingSolver'])
+        self.solver = self._form
 
 
     def step(self):
