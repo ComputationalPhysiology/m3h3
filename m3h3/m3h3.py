@@ -56,20 +56,16 @@ class M3H3(object):
 
 
     def _setup_solvers(self):
-        if Physics.ELECTRO in self.physics or\
-                                "Eletro" in self.physics:
+        if Physics.ELECTRO in self.physics:
             self.electro_solver = ElectroSolver(
                     self.electro_problem._form, self.time)
-        if Physics.SOLID in self.physics or\
-                                "Solid" in self.physics:
+        if Physics.SOLID in self.physics:
             self.solid_solver = SolidSolver(
                     self.solid_problem._form, self.time)
-        if Physics.FLUID in self.physics or\
-                                "Fluid" in self.physics:
+        if Physics.FLUID in self.physics:
             self.fluid_solver = FluidSolver(
                     self.fluid_problem._form, self.time)
-        if Physics.POROUS in self.physics or\
-                                "Porous" in self.physics:
+        if Physics.POROUS in self.physics:
             self.porous_solver = PorousSolver(
                     self.porous_problem._form, self.time)
 
