@@ -42,17 +42,25 @@ class M3H3(object):
 
     def _setup_problems(self):
         if Physics.ELECTRO in self.physics:
-            self.electro_problem = ElectroProblem(self.geometries[Physics.ELECTRO],
-                                        self.time, self.parameters[str(Physics.ELECTRO)])
+            self.electro_problem = ElectroProblem(
+                                        self.geometries[Physics.ELECTRO],
+                                        self.time,
+                                        self.parameters[str(Physics.ELECTRO)])
         if Physics.SOLID in self.physics:
-            self.solid_problem = SolidProblem(self.geometries[Physics.SOLID], 
-                                        self.time, self.parameters[str(Physics.SOLID)])
+            self.solid_problem = SolidProblem(
+                                        self.geometries[Physics.SOLID], 
+                                        self.time,
+                                        self.parameters[str(Physics.SOLID)])
         if Physics.FLUID in self.physics:
-            self.fluid_problem = FluidProblem(self.geometries[Physics.FLUID],
-                                        self.time, self.parameters[str(Physics.FLUID)])
+            self.fluid_problem = FluidProblem(
+                                        self.geometries[Physics.FLUID],
+                                        self.time,
+                                        self.parameters[str(Physics.FLUID)])
         if Physics.POROUS in self.physics:
-            self.porous_problem = PorousProblem(self.goemetries[Physics.POROUS],
-                                        self.time, self.parameters[str(Physics.POROUS)])
+            self.porous_problem = PorousProblem(
+                                        self.goemetries[Physics.POROUS],
+                                        self.time,
+                                        self.parameters[str(Physics.POROUS)])
 
 
     def _setup_solvers(self):
