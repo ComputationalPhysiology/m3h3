@@ -18,5 +18,4 @@ class ElectroSolver(Solver):
 
 
     def step(self):
-        interval = self.parameters[]
-        return next(self.solver.solve())
+        return self.solver.step((self.time, Constant(self.time+self.dt)))

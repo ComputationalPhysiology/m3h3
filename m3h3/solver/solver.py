@@ -7,3 +7,7 @@ class Solver(object):
         self.time = time
         self.interval = interval
         self.dt = dt
+
+
+    def step(self):
+        pass

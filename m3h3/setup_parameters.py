@@ -22,6 +22,14 @@ class Physics(Enum):
         return value in cls._value2member_map_
 
 
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+
+    def __hash__(self):
+        return hash(str(self))
+
+
 def set_dolfin_compiler_parameters():
     """Sets dolfin parameters to speed up the compiler.
     """
@@ -115,17 +123,20 @@ class Parameters(df.Parameters):
 
     def _set_solid_default_parameters(self):
         solid = df.Parameters(Physics.SOLID.value)
+        solid.add("dt", 1e-3)
         solid.add("dummy_parameter", False)
         self.add(solid)
 
 
     def _set_fluid_default_parameters(self):
         fluid = df.Parameters(Physics.FLUID.value)
+        fluid.add("dt", 1e-3)
         fluid.add("dummy_parameter", False)
         self.add(fluid)
 
 
     def _set_porous_default_parameters(self):
         porous = df.Parameters(Physics.POROUS.value)
+        porous.add("dt", 1e-3)
         porous.add("dummy_parameter", False)
         self.add(porous)
