@@ -23,4 +23,5 @@ class ElectroProblem(Problem):
     def _init_form(self, cell_model):
         M_i = self.parameters['M_i']
         M_e = self.parameters['M_e']
-        return cbcbeat.CardiacModel(self.geometry.mesh, self.time, M_i, M_e, cell_model)
+        return cbcbeat.CardiacModel(self.geometry.mesh, self.time, M_i, M_e,
+                                                                    cell_model)
