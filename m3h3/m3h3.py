@@ -13,8 +13,8 @@ from m3h3.solver import (ElectroSolver, SolidSolver, FluidSolver,
 
 class M3H3(object):
 
-    def __init__(self, geometry, physics, *args, **kwargs):
-        self.parameters = Parameters("M3H3")
+    def __init__(self, geometry, physics, parameters, *args, **kwargs):
+        self.parameters = parameters
         self.physics = [Physics(p) for p in physics
                                     if (Physics.has_value(p) or p in Physics)]
         self.interactions = kwargs.get('interactions', [])
