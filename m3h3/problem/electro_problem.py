@@ -11,7 +11,7 @@ class ElectroProblem(Problem):
     def __init__(self, geometry, time, parameters, **kwargs):
         super().__init__(geometry, time, parameters, **kwargs)
         self.cell_model = self.get_cell_model()
-        self._form = self._init_form()
+        self._form = self._init_form(**kwargs)
         self._fields = self._get_solution_fields()
         self._set_initial_conditions()
 
@@ -22,11 +22,11 @@ class ElectroProblem(Problem):
             return cbcbeat.Tentusscher_panfilov_2006_epi_cell()
 
 
-    def _init_form(self):
+    def _init_form(self, **kwargs):
         M_i = self.parameters['M_i']
         M_e = self.parameters['M_e']
         cardiac_model = cbcbeat.CardiacModel(self.geometry.mesh, self.time,
-                                                    M_i, M_e, self.cell_model)
+                                        M_i, M_e, self.cell_model, **kwargs)
         return cbcbeat.SplittingSolver(cardiac_model,
                                     params=self.parameters["SplittingSolver"])
 
