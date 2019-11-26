@@ -1,7 +1,7 @@
 from enum import Enum
 
 import dolfin as df
-from dolfin import (LogLevel, LUSolver, Parameters, PETScKrylovSolver)
+from dolfin import (LogLevel, LUSolver, PETScKrylovSolver)
 
 import cbcbeat
 
@@ -113,9 +113,10 @@ class Parameters(df.Parameters):
         electro["SplittingSolver"]["pde_solver"] = "bidomain"
         electro["SplittingSolver"]["CardiacODESolver"]["scheme"] = "RL1"
         electro["SplittingSolver"]["BidomainSolver"]["linear_solver_type"] =\
-                                                                        "iterative"
+                                                                    "iterative"
         electro["SplittingSolver"]["BidomainSolver"]["algorithm"] = "cg"
-        electro["SplittingSolver"]["BidomainSolver"]["preconditioner"] = "petsc_amg"
+        electro["SplittingSolver"]["BidomainSolver"]["preconditioner"] =\
+                                                                    "petsc_amg"
         electro["SplittingSolver"]["enable_adjoint"] = False
 
         self.add(electro)
