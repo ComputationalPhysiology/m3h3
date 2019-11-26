@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""This module handles parameters for cardiac simulations.
+"""
+
 from enum import Enum
 
 import dolfin as df
@@ -9,6 +13,8 @@ import m3h3
 
 
 class Physics(Enum):
+    """This Enum contains physics descriptors for cardiac simulations. 
+    """
     ELECTRO = "Electro"
     SOLID = "Solid"
     FLUID = "Fluid"
@@ -41,6 +47,9 @@ def set_dolfin_compiler_parameters():
 
 
 class Parameters(df.Parameters):
+    """This class handles parameters for cardiac simulations. It inherits
+    from `dolfin`'s Parameters class.
+    """
 
     def __init__(self, label, **kwargs):
         super().__init__(label, **kwargs)
@@ -49,6 +58,8 @@ class Parameters(df.Parameters):
 
 
     def set_default_parameters(self):
+        """Sets default simulation parameters.
+        """
         self.add("log_level", df.get_log_level())
         m3h3.log(self["log_level"], "Log level is set to {}".format(
             LogLevel(self["log_level"])
@@ -58,8 +69,8 @@ class Parameters(df.Parameters):
 
 
     def set_electro_parameters(self, parameters=None):
-        """Sets parameters for electrophysiology problems and solver. If argument
-        is None, default parameters are applied
+        """Sets parameters for electrophysiology problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.ELECTRO.value):
             self._set_electro_default_parameters()
@@ -68,16 +79,18 @@ class Parameters(df.Parameters):
 
 
     def set_solid_parameters(self, parameters=None):
-        """Sets default parameters for solid mechanics problems.
+        """Sets parameters for solid mechanics problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.SOLID.value):
             self._set_solid_default_parameters()
         if self.has_parameter_set(Physics.SOLID.value) and parameters:
-             self[Physics.SOLID.value].update(parameters)
+            self[Physics.SOLID.value].update(parameters)
 
 
     def set_fluid_parameters(self, parameters=None):
-        """Sets default parameters for fluid dynamics problems.
+        """Sets parameters for fluid mechanics problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.FLUID.value):
             self._set_fluid_default_parameters()
@@ -86,7 +99,8 @@ class Parameters(df.Parameters):
 
 
     def set_porous_parameters(self, parameters=None):
-        """Sets default parameters for porous mechanics problems.
+        """Sets parameters for porous mechanics problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.POROUS.value):
             self._set_porous_default_parameters()

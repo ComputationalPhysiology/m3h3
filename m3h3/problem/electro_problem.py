@@ -1,12 +1,16 @@
-from dolfin import (Constant)
+# -*- coding: utf-8 -*-
+"""This module implements the variational form for electrophysiology problems
+"""
 
 import cbcbeat
 
-from m3h3 import Parameters, Physics
 from m3h3.problem import Problem
 
 
 class ElectroProblem(Problem):
+    """This class implements the variational form for electrophysiology
+    problems.
+    """
 
     def __init__(self, geometry, time, parameters, **kwargs):
         super().__init__(geometry, time, parameters, **kwargs)
@@ -17,6 +21,8 @@ class ElectroProblem(Problem):
 
 
     def get_cell_model(self):
+        """Returns the cell model specified in the parameters.
+        """
         model = self.parameters['cell_model']
         if model == "Tentusscher_panfilov_2006_M_cell":
             return cbcbeat.Tentusscher_panfilov_2006_epi_cell()
