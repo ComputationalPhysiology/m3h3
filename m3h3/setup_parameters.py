@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+"""This module handles parameters for cardiac simulations.
+"""
+
 from enum import Enum
 
 import dolfin as df
-from dolfin import (LogLevel, LUSolver, Parameters, PETScKrylovSolver)
+from dolfin import (LogLevel, LUSolver, PETScKrylovSolver)
 
 import cbcbeat
 
@@ -9,6 +13,8 @@ import m3h3
 
 
 class Physics(Enum):
+    """This Enum contains physics descriptors for cardiac simulations. 
+    """
     ELECTRO = "Electro"
     SOLID = "Solid"
     FLUID = "Fluid"
@@ -22,6 +28,14 @@ class Physics(Enum):
         return value in cls._value2member_map_
 
 
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+
+    def __hash__(self):
+        return hash(str(self))
+
+
 def set_dolfin_compiler_parameters():
     """Sets dolfin parameters to speed up the compiler.
     """
@@ -33,6 +47,9 @@ def set_dolfin_compiler_parameters():
 
 
 class Parameters(df.Parameters):
+    """This class handles parameters for cardiac simulations. It inherits
+    from `dolfin`'s Parameters class.
+    """
 
     def __init__(self, label, **kwargs):
         super().__init__(label, **kwargs)
@@ -41,6 +58,8 @@ class Parameters(df.Parameters):
 
 
     def set_default_parameters(self):
+        """Sets default simulation parameters.
+        """
         self.add("log_level", df.get_log_level())
         m3h3.log(self["log_level"], "Log level is set to {}".format(
             LogLevel(self["log_level"])
@@ -50,8 +69,8 @@ class Parameters(df.Parameters):
 
 
     def set_electro_parameters(self, parameters=None):
-        """Sets parameters for electrophysiology problems and solver. If argument
-        is None, default parameters are applied
+        """Sets parameters for electrophysiology problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.ELECTRO.value):
             self._set_electro_default_parameters()
@@ -60,16 +79,18 @@ class Parameters(df.Parameters):
 
 
     def set_solid_parameters(self, parameters=None):
-        """Sets default parameters for solid mechanics problems.
+        """Sets parameters for solid mechanics problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.SOLID.value):
             self._set_solid_default_parameters()
         if self.has_parameter_set(Physics.SOLID.value) and parameters:
-             self[Physics.SOLID.value].update(parameters)
+            self[Physics.SOLID.value].update(parameters)
 
 
     def set_fluid_parameters(self, parameters=None):
-        """Sets default parameters for fluid dynamics problems.
+        """Sets parameters for fluid mechanics problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.FLUID.value):
             self._set_fluid_default_parameters()
@@ -78,7 +99,8 @@ class Parameters(df.Parameters):
 
 
     def set_porous_parameters(self, parameters=None):
-        """Sets default parameters for porous mechanics problems.
+        """Sets parameters for porous mechanics problems and solver. If
+        argument is None, default parameters are applied.
         """
         if not self.has_parameter_set(Physics.POROUS.value):
             self._set_porous_default_parameters()
@@ -87,7 +109,7 @@ class Parameters(df.Parameters):
 
 
     def _set_electro_default_parameters(self):
-        electro = Parameters(Physics.ELECTRO.value)
+        electro = df.Parameters(Physics.ELECTRO.value)
 
         # Set default parameters
         electro.add("dt", 1e-3)
@@ -105,31 +127,58 @@ class Parameters(df.Parameters):
         electro["SplittingSolver"]["pde_solver"] = "bidomain"
         electro["SplittingSolver"]["CardiacODESolver"]["scheme"] = "RL1"
         electro["SplittingSolver"]["BidomainSolver"]["linear_solver_type"] =\
-                                                                        "iterative"
+                                                                    "iterative"
         electro["SplittingSolver"]["BidomainSolver"]["algorithm"] = "cg"
-        electro["SplittingSolver"]["BidomainSolver"]["preconditioner"] = "petsc_amg"
+        electro["SplittingSolver"]["BidomainSolver"]["preconditioner"] =\
+                                                                    "petsc_amg"
         electro["SplittingSolver"]["enable_adjoint"] = False
 
         self.add(electro)
 
 
     def _set_solid_default_parameters(self):
-        solid = Parameters(Physics.SOLID.value)
+        solid = df.Parameters(Physics.SOLID.value)
+        solid.add("dt", 1e-3)
         solid.add("dummy_parameter", False)
+
+        # Add default parameters from both LU and Krylov solvers
+        solid.add(LUSolver.default_parameters())
+        solid.add(PETScKrylovSolver.default_parameters())
+
+        # Add solver parameters
+        solid.add(df.Parameters("Solver"))
+        solid["Solver"].add("dummy_parameter", False)
+
         self.add(solid)
 
 
     def _set_fluid_default_parameters(self):
-        fluid = Parameters(Physics.FLUID.value)
+        fluid = df.Parameters(Physics.FLUID.value)
+        fluid.add("dt", 1e-3)
         fluid.add("dummy_parameter", False)
+
+        # Add default parameters from both LU and Krylov solvers
+        fluid.add(LUSolver.default_parameters())
+        fluid.add(PETScKrylovSolver.default_parameters())
+
+        # Add solver parameters
+        fluid.add(df.Parameters("Solver"))
+        fluid["Solver"].add("dummy_parameter", False)
+
         self.add(fluid)
 
 
     def _set_porous_default_parameters(self):
-        porous = Parameters(Physics.POROUS.value)
+        porous = df.Parameters(Physics.POROUS.value)
+        porous.add("dt", 1e-3)
         porous.add("dummy_parameter", False)
+
+        # Add default parameters from both LU and Krylov solvers
+        porous.add(LUSolver.default_parameters())
+        porous.add(PETScKrylovSolver.default_parameters())
+
+        # Add solver parameters
+        porous.add(df.Parameters("Solver"))
+        porous["Solver"].add("dummy_parameter", False)
+
         self.add(porous)
-
-
-    def reset_m3h3_parameters():
-        self.parameters = Parameters("M3H3")

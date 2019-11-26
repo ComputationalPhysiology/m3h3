@@ -1,26 +1,48 @@
-from dolfin import (Constant)
+# -*- coding: utf-8 -*-
+"""This module implements the variational form for electrophysiology problems
+"""
 
 import cbcbeat
 
-from m3h3 import Parameters, Physics
 from m3h3.problem import Problem
 
 
 class ElectroProblem(Problem):
+    """This class implements the variational form for electrophysiology
+    problems.
+    """
 
-    def __init__(self, geometry, time, **kwargs):
-        super().__init__(geometry, time, **kwargs)
-        cell_model = self.get_cell_model()
-        self._form = self._init_form(cell_model)
+    def __init__(self, geometry, time, parameters, **kwargs):
+        super().__init__(geometry, time, parameters, **kwargs)
+        self.cell_model = self.get_cell_model()
+        self._form = self._init_form(**kwargs)
+        self._fields = self._get_solution_fields()
+        self._set_initial_conditions()
 
 
     def get_cell_model(self):
-        model = parameters[Physics.ELECTRO.value]['cell_model']
-        if model == "Tentusscher_panfilov_2006_epi_cell":
-            return cbcbeat.Tentusscher_panfilov_2006_M_cell()
+        """Returns the cell model specified in the parameters.
+        """
+        model = self.parameters['cell_model']
+        if model == "Tentusscher_panfilov_2006_M_cell":
+            return cbcbeat.Tentusscher_panfilov_2006_epi_cell()
 
 
-    def _init_form(self, cell_model):
-        M_i = parameters[Physics.ELECTRO.value]['M_i']
-        M_e = parameters[Physics.ELECTRO.value]['M_e']
-        return cbcbeat.CardiacModel(self.mesh, self.time, M_i, M_e, cell_model)
+    def _init_form(self, **kwargs):
+        M_i = self.parameters['M_i']
+        M_e = self.parameters['M_e']
+        model_kwargs = {k: kwargs[k] for k in kwargs.keys() &\
+                                        {'stimulus'}}
+        cardiac_model = cbcbeat.CardiacModel(self.geometry.mesh, self.time,
+                                        M_i, M_e, self.cell_model,
+                                        **model_kwargs)
+        return cbcbeat.SplittingSolver(cardiac_model,
+                                    params=self.parameters["SplittingSolver"])
+
+
+    def _get_solution_fields(self):
+        return self._form.solution_fields()
+
+
+    def _set_initial_conditions(self):
+        self._fields[0].assign(self.cell_model.initial_conditions())
