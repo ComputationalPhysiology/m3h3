@@ -23,6 +23,7 @@ class M3H3(object):
 
         if 'time' in kwargs.keys():
             self.time = kwargs['time']
+            kwargs.pop('time', None)
         else:
             self.time = Constant(self.parameters['start_time'])
 
@@ -36,8 +37,8 @@ class M3H3(object):
             self.parameters.set_porous_parameters()
 
         self._setup_geometries(geometry, physics)
-        self._setup_problems()
-        self._setup_solvers()
+        self._setup_problems(**kwargs)
+        self._setup_solvers(**kwargs)
 
 
     def step(self):
@@ -48,23 +49,33 @@ class M3H3(object):
         solution_fields = []
         if Physics.ELECTRO in self.physics:
             for step in range(self.num_steps[Physics.ELECTRO]):
-                solution = self.electro_solver.step()
-            solution_fields.extend(solution)
+                self.electro_solver.step()
         if Physics.SOLID in self.physics:
             for step in range(self.num_steps[Physics.SOLID]):
-                solution = self.solid_solver.step()
-            solution_fields.append(solution)
+                self.solid_solver.step()
         if Physics.FLUID in self.physics:
             for step in range(self.num_steps[Physics.FLUID]):
-                solution = self.fluid_solver.step()
-            solution_fields.append(solution)
+                self.fluid_solver.step()
         if Physics.POROUS in self.physics:
             for step in range(self.num_steps[Physics.POROUS]):
-                solution = self.porous_solver.step()
-            solution_fields.append(solution)
+                self.porous_solver.step()
+        solution_fields = self.get_solution_fields()
         time = float(self.time)
         self.time.assign(time + self.max_dt)
         return self.time, solution_fields
+
+
+    def get_solution_fields(self):
+        solution_fields = []
+        if Physics.ELECTRO in self.physics:
+            solution_fields.extend(self.electro_problem._get_solution_fields())
+        if Physics.SOLID in self.physics:
+            pass
+        if Physics.FLUID in self.physics:
+            pass
+        if Physics.POROUS in self.physics:
+            pass
+        return solution_fields
 
 
     def _get_num_steps(self):
@@ -113,51 +124,59 @@ class M3H3(object):
         return dt
 
 
-    def _setup_problems(self):
+    def _setup_problems(self, **kwargs):
         if Physics.ELECTRO in self.physics:
             self.electro_problem = ElectroProblem(
                                         self.geometries[Physics.ELECTRO],
                                         self.time,
-                                        self.parameters[str(Physics.ELECTRO)])
+                                        self.parameters[str(Physics.ELECTRO)],
+                                        **kwargs)
         if Physics.SOLID in self.physics:
             self.solid_problem = SolidProblem(
                                         self.geometries[Physics.SOLID], 
                                         self.time,
-                                        self.parameters[str(Physics.SOLID)])
+                                        self.parameters[str(Physics.SOLID)],
+                                        **kwargs)
         if Physics.FLUID in self.physics:
             self.fluid_problem = FluidProblem(
                                         self.geometries[Physics.FLUID],
                                         self.time,
-                                        self.parameters[str(Physics.FLUID)])
+                                        self.parameters[str(Physics.FLUID)],
+                                        **kwargs)
         if Physics.POROUS in self.physics:
             self.porous_problem = PorousProblem(
                                         self.goemetries[Physics.POROUS],
                                         self.time,
-                                        self.parameters[str(Physics.POROUS)])
+                                        self.parameters[str(Physics.POROUS)],
+                                        **kwargs)
 
 
-    def _setup_solvers(self):
+    def _setup_solvers(self, **kwargs):
         interval = (self.parameters['start_time'], self.parameters['end_time'])
         if Physics.ELECTRO in self.physics:
             parameters = self.parameters[str(Physics.ELECTRO)]
             self.electro_solver = ElectroSolver(
                                     self.electro_problem._form, self.time,
-                                    interval, parameters['dt'], parameters)
+                                    interval, parameters['dt'], parameters,
+                                    **kwargs)
         if Physics.SOLID in self.physics:
             parameters = self.parameters[str(Physics.SOLID)]
             self.solid_solver = SolidSolver(
                                     self.solid_problem._form, self.time,
-                                    interval, parameters['dt'], parameters)
+                                    interval, parameters['dt'], parameters,
+                                    **kwargs)
         if Physics.FLUID in self.physics:
             parameters = self.parameters[str(Physics.FLUID)]
             self.fluid_solver = FluidSolver(
                                     self.fluid_problem._form, self.time,
-                                    interval, parameters['dt'], parameters)
+                                    interval, parameters['dt'], parameters,
+                                    **kwargs)
         if Physics.POROUS in self.physics:
             parameters = self.parameters[str(Physics.POROUS)]
             self.porous_solver = PorousSolver(
                                     self.porous_problem._form, self.time,
-                                    interval, parameters['dt'], parameters)
+                                    interval, parameters['dt'], parameters,
+                                    **kwargs)
 
 
     def _setup_geometries(self, geometry, physics):

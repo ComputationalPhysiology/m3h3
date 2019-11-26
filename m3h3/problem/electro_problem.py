@@ -25,8 +25,11 @@ class ElectroProblem(Problem):
     def _init_form(self, **kwargs):
         M_i = self.parameters['M_i']
         M_e = self.parameters['M_e']
+        model_kwargs = {k: kwargs[k] for k in kwargs.keys() &\
+                                        {'stimulus'}}
         cardiac_model = cbcbeat.CardiacModel(self.geometry.mesh, self.time,
-                                        M_i, M_e, self.cell_model, **kwargs)
+                                        M_i, M_e, self.cell_model,
+                                        **model_kwargs)
         return cbcbeat.SplittingSolver(cardiac_model,
                                     params=self.parameters["SplittingSolver"])
 
