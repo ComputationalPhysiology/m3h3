@@ -48,16 +48,16 @@ class M3H3(object):
             
         solution_fields = []
         if Physics.ELECTRO in self.physics:
-            for step in range(self.num_steps[Physics.ELECTRO]):
+            for _ in range(self.num_steps[Physics.ELECTRO]):
                 self.electro_solver.step()
         if Physics.SOLID in self.physics:
-            for step in range(self.num_steps[Physics.SOLID]):
+            for _ in range(self.num_steps[Physics.SOLID]):
                 self.solid_solver.step()
         if Physics.FLUID in self.physics:
-            for step in range(self.num_steps[Physics.FLUID]):
+            for _ in range(self.num_steps[Physics.FLUID]):
                 self.fluid_solver.step()
         if Physics.POROUS in self.physics:
-            for step in range(self.num_steps[Physics.POROUS]):
+            for _ in range(self.num_steps[Physics.POROUS]):
                 self.porous_solver.step()
         solution_fields = self.get_solution_fields()
         time = float(self.time)
@@ -145,7 +145,7 @@ class M3H3(object):
                                         **kwargs)
         if Physics.POROUS in self.physics:
             self.porous_problem = PorousProblem(
-                                        self.goemetries[Physics.POROUS],
+                                        self.geometries[Physics.POROUS],
                                         self.time,
                                         self.parameters[str(Physics.POROUS)],
                                         **kwargs)
@@ -191,6 +191,7 @@ class M3H3(object):
                             "MultiGeometry. Ensure that geometry labels "\
                             "correspond to values in Physics "\
                             "enum.".format(phys.value)
+                    raise KeyError(msg)
         else:
             for phys in physics:
                 self.geometries[phys] = geometry.copy(deepcopy=True)
@@ -218,24 +219,24 @@ class M3H3(object):
                     raise KeyError(msg)
 
 
-    def _setup_electro_problem(self, parameter):
+    def _setup_electro_problem(self, parameters):
         self.electro_problem = ElectroProblem(self.geometries[Physics.ELECTRO],
-                                                self.time)
+                                                self.time, parameters)
 
 
-    def _setup_solid_problem(self, parameter):
+    def _setup_solid_problem(self, parameters):
         self.solid_problem = SolidProblem(self.geometries[Physics.SOLID],
-                                                self.time)
+                                                self.time, parameters)
 
 
-    def _setup_fluid_problem(self, parameter):
+    def _setup_fluid_problem(self, parameters):
         self.fluid_problem = FluidProblem(self.geometries[Physics.FLUID],
-                                                self.time)
+                                                self.time, parameters)
 
 
-    def _setup_porous_problem(self, parameter):
+    def _setup_porous_problem(self, parameters):
         self.porous_problem = PorousProblem(self.geometries[Physics.POROUS],
-                                                self.time)
+                                                self.time, parameters)
 
 
     def update_parameters(self, physics, parameters):
