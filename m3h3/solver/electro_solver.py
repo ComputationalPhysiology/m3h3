@@ -17,4 +17,7 @@ class ElectroSolver(Solver):
 
 
     def step(self):
-        return self.solver.step((self.time, Constant(self.time+self.dt)))
+        time = float(self.time)
+        new_time = time+self.dt
+        self.solver.step((time, new_time))
+        return self.solver.solution_fields()

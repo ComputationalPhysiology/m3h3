@@ -13,15 +13,18 @@ from m3h3.solver import (ElectroSolver, SolidSolver, FluidSolver,
 
 class M3H3(object):
 
-    def __init__(self, geometry, physics, *args, **kwargs):
-        self.parameters = Parameters("M3H3")
+    def __init__(self, geometry, physics, parameters, *args, **kwargs):
+        self.parameters = parameters
         self.physics = [Physics(p) for p in physics
                                     if (Physics.has_value(p) or p in Physics)]
         self.interactions = kwargs.get('interactions', [])
         if len(self.interactions) > 0:
             self._check_physics_interactions()
 
-        self.time = Constant(self.parameters['start_time'])
+        if 'time' in kwargs.keys():
+            self.time = kwargs['time']
+        else:
+            self.time = Constant(self.parameters['start_time'])
 
         if Physics.ELECTRO in physics:
             self.parameters.set_electro_parameters()
@@ -46,7 +49,7 @@ class M3H3(object):
         if Physics.ELECTRO in self.physics:
             for step in range(self.num_steps[Physics.ELECTRO]):
                 solution = self.electro_solver.step()
-            solution_fields.append(solution)
+            solution_fields.extend(solution)
         if Physics.SOLID in self.physics:
             for step in range(self.num_steps[Physics.SOLID]):
                 solution = self.solid_solver.step()
@@ -59,9 +62,9 @@ class M3H3(object):
             for step in range(self.num_steps[Physics.POROUS]):
                 solution = self.porous_solver.step()
             solution_fields.append(solution)
-        time = self.time
-        self.time += self.max_dt
-        return time, solution_fields
+        time = float(self.time)
+        self.time.assign(time + self.max_dt)
+        return self.time, solution_fields
 
 
     def _get_num_steps(self):
@@ -72,19 +75,19 @@ class M3H3(object):
         if Physics.ELECTRO in self.physics:
             dt = dt_physics[Physics.ELECTRO]
             if self._check_dt_is_multiple(dt, min_dt):
-                num_steps[Physics.ELECTRO] = int(dt/min_dt)
+                num_steps[Physics.ELECTRO] = int(max_dt/dt)
         if Physics.SOLID in self.physics:
             dt = dt_physics[Physics.SOLID]
             if self._check_dt_is_multiple(dt, min_dt):
-                num_steps[Physics.SOLID] = int(dt/min_dt)
+                num_steps[Physics.SOLID] = int(max_dt/dt)
         if Physics.FLUID in self.physics:
             dt = dt_physics[Physics.FLUID]
             if self._check_dt_is_multiple(dt, min_dt):
-                num_steps[Physics.FLUID] = int(dt/min_dt)
+                num_steps[Physics.FLUID] = int(max_dt/dt)
         if Physics.POROUS in self.physics:
             dt = dt_physics[Physics.POROUS]
             if self._check_dt_is_multiple(dt, min_dt):
-                num_steps[Physics.POROUS] = int(dt/min_dt)
+                num_steps[Physics.POROUS] = int(max_dt/dt)
         return num_steps, max_dt
 
 
