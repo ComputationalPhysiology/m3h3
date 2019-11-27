@@ -45,7 +45,8 @@ class M3H3(object):
         # Setup time stepping if running step function for the first time.
         if self.time.values()[0] == self.parameters['start_time']:
             self.num_steps, self.max_dt = self._get_num_steps()
-            
+
+        time = float(self.time)
         solution_fields = []
         if Physics.ELECTRO in self.physics:
             for _ in range(self.num_steps[Physics.ELECTRO]):
@@ -59,8 +60,8 @@ class M3H3(object):
         if Physics.POROUS in self.physics:
             for _ in range(self.num_steps[Physics.POROUS]):
                 self.porous_solver.step()
+                
         solution_fields = self.get_solution_fields()
-        time = float(self.time)
         self.time.assign(time + self.max_dt)
         return time, solution_fields
 
