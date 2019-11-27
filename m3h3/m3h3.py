@@ -62,7 +62,7 @@ class M3H3(object):
         solution_fields = self.get_solution_fields()
         time = float(self.time)
         self.time.assign(time + self.max_dt)
-        return self.time, solution_fields
+        return time, solution_fields
 
 
     def get_solution_fields(self):
