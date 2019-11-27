@@ -16,7 +16,7 @@ import dolfin as df
 import numpy as np
 
 import m3h3
-from m3h3 import M3H3, Parameters, Physics
+from m3h3 import M3H3, Parameters, Physics, Stimulus
 from geometry import Geometry2D, MultiGeometry
 
 
@@ -35,7 +35,7 @@ geo = Geometry2D(mesh)
 
 # Setup parameters
 parameters = Parameters('M3H3')
-parameters['end_time'] = 400.0 # ms
+parameters['end_time'] = 800.0 # ms
 
 parameters.set_electro_parameters()
 eparam = parameters['Electro']
@@ -49,10 +49,24 @@ dt = eparam['dt']
 time = df.Constant(starttime)
 steps = int((endtime-starttime)/dt)
 
-# Setup simulation
+# Setup stimulation protocol
+class PacingCells(df.SubDomain):
+    def inside(self, x, on_boundary):
+        return pow(x[0], 2) + pow(x[1], 2) < 1.0
+
+pacing_markers = df.MeshFunction('size_t', geo.mesh, geo.dim()-1)
+pacing_markers.set_all(0)
+pacing_cells = PacingCells()
+pacing_cells.mark(pacing_markers, 1)
+
+# Setup simulation protocol
 physics = [Physics.ELECTRO]
-stim_str = "(pow(x[0], 2) + pow(x[1], 2) < 1.0*1.0 && t <= 5) ? 100 : 0.0"
-stimulus = df.Expression(stim_str, t=time, degree=0)
+stim_frequency = 6.6 # Hz
+stim_period = 1/stim_frequency * 1000 # convert to ms
+stimulus = Stimulus(pacing_markers, amplitude=100, period=stim_period,
+                                                duration=5, t=time, degree=1)
+
+# Setup simulation
 m = M3H3(geo, physics, parameters, time=time, stimulus=stimulus)
 
 # File for output
