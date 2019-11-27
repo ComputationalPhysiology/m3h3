@@ -13,9 +13,10 @@ class ElectroSolver(Solver):
 
 
     def _init_solver(self):
-        self.solver = self._form
+        self.solver = self._form.solve(self.interval, self.dt)
+        self.solution_fields = self._form.solution_fields()
 
 
     def step(self):
         time = float(self.time)
-        self.solver.step((time-self.dt, time))
+        (t0, t1), self.solution_fields = next(self.solver)
