@@ -2,9 +2,31 @@
 """This module implements the variational form for electrophysiology problems
 """
 
+from dolfin import UserExpression
 import cbcbeat
 
 from m3h3.problem import Problem
+
+
+class Stimulus(UserExpression):
+
+    def __init__(self, markers, **kwargs):
+        super().__init__(degree=kwargs['degree'])
+        self.markers = markers
+        self.amplitude = kwargs['amplitude']
+        self.period = kwargs['period']
+        self.duration = kwargs['duration']
+        self.t = kwargs['t']
+
+    def eval_cell(self, values, x, cell):
+        periodic_t = float(self.t) % self.period
+        if self.markers[cell.index] == 1 and periodic_t < self.duration:
+            values[0] = self.amplitude
+        else:
+            values[0] = 0
+            
+    def value_shape(self):
+        return ()
 
 
 class ElectroProblem(Problem):
