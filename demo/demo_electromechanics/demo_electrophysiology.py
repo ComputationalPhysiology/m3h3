@@ -17,7 +17,7 @@ import numpy as np
 
 import m3h3
 from m3h3 import M3H3, Parameters, Physics, Stimulus
-from geometry import Geometry2D, MultiGeometry
+from geometry import Geometry2D
 
 
 comm = df.MPI.comm_world
@@ -35,7 +35,7 @@ geo = Geometry2D(mesh)
 
 # Setup parameters
 parameters = Parameters('M3H3')
-parameters['end_time'] = 800.0 # ms
+parameters['end_time'] = 400.0 # ms
 
 parameters.set_electro_parameters()
 eparam = parameters['Electro']
@@ -61,8 +61,7 @@ pacing_cells.mark(pacing_markers, 1)
 
 # Setup simulation protocol
 physics = [Physics.ELECTRO]
-stim_frequency = 6.6 # Hz
-stim_period = 1/stim_frequency * 1000 # convert to ms
+stim_period = 400
 stimulus = Stimulus(pacing_markers, amplitude=100, period=stim_period,
                                                 duration=5, t=time, degree=1)
 
@@ -78,7 +77,7 @@ f.parameters["functions_share_mesh"] = True
 # Loop over time
 for step in range(steps):
     time, fields = m.step()
-    if time % 5 < dt:
+    if time % 10 < dt:
         for field in fields:
             if field is not None:
                 f.write(field, int(time))
