@@ -141,6 +141,17 @@ class Parameters(df.Parameters):
         solid.add("dt", 1e-3)
         solid.add("dummy_parameter", False)
 
+        # Add boundary condtion parameters
+        solid.add(df.Parameters("BoundaryConditions"))
+        solid["BoundaryConditions"].add(df.Parameters("DirichletBC"))
+        solid["BoundaryConditions"]["DirichletBC"].add("fix_base", True)
+        solid["BoundaryConditions"].add(df.Parameters("NeumannBC"))
+        solid["BoundaryConditions"]["NeumannBC"].add("lv_pressure", 10.0)
+        solid["BoundaryConditions"]["NeumannBC"].add("rv_pressure", 0.0)
+        solid["BoundaryConditions"].add(df.Parameters("RobinBC"))
+        solid["BoundaryConditions"]["RobinBC"].add("pericardium_spring", 0.0)
+        solid["BoundaryConditions"]["RobinBC"].add("base_spring", 0.0)
+
         # Add default parameters from both LU and Krylov solvers
         solid.add(LUSolver.default_parameters())
         solid.add(PETScKrylovSolver.default_parameters())
