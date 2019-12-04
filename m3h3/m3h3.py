@@ -193,6 +193,8 @@ class M3H3(object):
                             "correspond to values in Physics "\
                             "enum.".format(phys.value)
                     raise KeyError(msg)
+        elif len(physics) == 1:
+            self.geometries[physics[0]] = geometry
         else:
             for phys in physics:
                 self.geometries[phys] = geometry.copy(deepcopy=True)
