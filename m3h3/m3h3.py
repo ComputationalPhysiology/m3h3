@@ -2,7 +2,7 @@ import numpy as np
 
 from dolfin import (Constant, Parameters)
 
-from geometry import Geometry, MultiGeometry
+from geometry import HeartGeometry, MultiGeometry
 
 from m3h3.setup_parameters import Parameters, Physics
 from m3h3.problem import (ElectroProblem, SolidProblem, FluidProblem,
@@ -193,9 +193,13 @@ class M3H3(object):
                             "correspond to values in Physics "\
                             "enum.".format(phys.value)
                     raise KeyError(msg)
+
+                assert isinstance(self.geometries[phys], HeartGeometry)
         elif len(physics) == 1:
+            assert isinstance(geometry, HeartGeometry) 
             self.geometries[physics[0]] = geometry
         else:
+            assert isinstance(geometry, HeartGeometry) 
             for phys in physics:
                 self.geometries[phys] = geometry.copy(deepcopy=True)
 
