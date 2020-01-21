@@ -5,7 +5,8 @@
 from enum import Enum
 
 import dolfin as df
-from dolfin import (LogLevel, LUSolver, PETScKrylovSolver)
+from dolfin import (LogLevel, LUSolver, PETScKrylovSolver,
+                    NonlinearVariationalSolver)
 
 import cbcbeat
 
@@ -150,6 +151,7 @@ class Parameters(df.Parameters):
         solid["BoundaryConditions"].add("base_spring", 0.0)
 
         # Add default parameters from both LU and Krylov solvers
+        solid.add(NonlinearVariationalSolver.default_parameters())
         solid.add(LUSolver.default_parameters())
         solid.add(PETScKrylovSolver.default_parameters())
 
