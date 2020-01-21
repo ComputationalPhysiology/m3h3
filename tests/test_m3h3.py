@@ -38,6 +38,8 @@ def test_solve(m3h3):
 @fixture
 def m3h3(geo, linear_elastic_material):
     parameters = Parameters("M3H3")
+    parameters.set_electro_parameters()
+    parameters.set_solid_parameters()
     ia = Interaction(Physics.ELECTRO, Physics.SOLID)
     return M3H3(geo, parameters, interactions=[ia],
                 material=linear_elastic_material)
