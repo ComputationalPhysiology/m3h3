@@ -12,13 +12,11 @@ def test_m3h3(geo, linear_elastic_material):
     with raises(Exception):
         parameters = Parameters("M3H3")
         parameters.set_electro_parameters()
-        M3H3(geo, [Physics.ELECTRO], parameters, interactions=[ia2])
-        M3H3(geo, [Physics.ELECTRO], parameters, interactions=[ia1])
+        M3H3(geo, parameters, interactions=[ia2])
+        M3H3(geo, parameters, interactions=[ia1])
         parameters.set_solid_parameters()
-        M3H3(geo, [Physics.ELECTRO, Physics.SOLID], parameters,
-                                                    interactions=[ia1, ia2])
-    m = M3H3(geo, [Physics.ELECTRO, Physics.SOLID], parameters,
-                material=linear_elastic_material)
+        M3H3(geo, parameters, interactions=[ia1, ia2])
+    m = M3H3(geo, parameters, material=linear_elastic_material)
     assert m
 
 
