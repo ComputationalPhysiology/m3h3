@@ -11,3 +11,7 @@ from pulse.material.stvenantkirchhoff import StVenantKirchhoff
 # Active models
 from pulse.material.active_strain import ActiveStrain
 from pulse.material.active_stress import ActiveStress
+
+
+__all__ = ['HolzapfelOgden', 'Guccione', 'LinearElastic', 'NeoHookean',
+            'StVenantKirchhoff']
