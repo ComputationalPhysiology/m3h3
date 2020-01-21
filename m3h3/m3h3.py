@@ -13,10 +13,10 @@ from m3h3.solver import (ElectroSolver, SolidSolver, FluidSolver,
 
 class M3H3(object):
 
-    def __init__(self, geometry, physics, parameters, *args, **kwargs):
+    def __init__(self, geometry, parameters, *args, **kwargs):
         self.parameters = parameters
-        self.physics = [Physics(p) for p in physics
-                                    if (Physics.has_value(p) or p in Physics)]
+        self.physics = [Physics(p) for p in parameters.keys()
+                                                    if Physics.has_value(p)]
         self.interactions = kwargs.get('interactions', [])
         if len(self.interactions) > 0:
             self._check_physics_interactions()
@@ -27,16 +27,7 @@ class M3H3(object):
         else:
             self.time = Constant(self.parameters['start_time'])
 
-        if Physics.ELECTRO in physics:
-            self.parameters.set_electro_parameters()
-        if Physics.SOLID in physics:
-            self.parameters.set_solid_parameters()
-        if Physics.FLUID in physics:
-            self.parameters.set_fluid_parameters()
-        if Physics.POROUS in physics:
-            self.parameters.set_porous_parameters()
-
-        self._setup_geometries(geometry, physics)
+        self._setup_geometries(geometry, self.physics)
         self._setup_problems(**kwargs)
         self._setup_solvers(**kwargs)
 
@@ -196,10 +187,8 @@ class M3H3(object):
 
                 assert isinstance(self.geometries[phys], HeartGeometry)
         elif len(physics) == 1:
-            assert isinstance(geometry, HeartGeometry) 
             self.geometries[physics[0]] = geometry
         else:
-            assert isinstance(geometry, HeartGeometry) 
             for phys in physics:
                 self.geometries[phys] = geometry.copy(deepcopy=True)
 
