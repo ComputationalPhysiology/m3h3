@@ -5,7 +5,7 @@ from dolfin import Constant, DirichletBC
 import pulse
 from pulse.utils import get_lv_marker
 
-from m3h3.problem.problem import Problem
+from m3h3.pde import Problem
 
 
 def dirichlet_fix_base(W, ffun, marker):
@@ -86,3 +86,4 @@ class SolidProblem(pulse.MechanicsProblem):
         bcs = boundary_conditions(geometry, **bcs_parameters)
         super().__init__(geometry, kwargs['material'], bcs=bcs)
         self._form = self._virtual_work
+        self._jacobian = 0
