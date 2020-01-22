@@ -1,6 +1,6 @@
 import dolfin as df
 
-from m3h3.problem.problem import Problem
+from m3h3.pde import Problem
 
 
 class PorousProblem(Problem):
