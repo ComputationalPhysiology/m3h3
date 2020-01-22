@@ -5,7 +5,7 @@ from dolfin import (Constant, Parameters)
 from geometry import HeartGeometry, MultiGeometry
 
 from m3h3.setup_parameters import Parameters, Physics
-from m3h3.problem import (ElectroProblem, SolidProblem, FluidProblem,
+from m3h3.pde import (ElectroProblem, SolidProblem, FluidProblem,
                         PorousProblem)
 from m3h3.solver import (ElectroSolver, SolidSolver, FluidSolver,
                         PorousSolver)

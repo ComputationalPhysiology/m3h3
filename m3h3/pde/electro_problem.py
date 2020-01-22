@@ -5,7 +5,8 @@
 from dolfin import UserExpression
 import cbcbeat
 
-from m3h3.problem import Problem
+from m3h3.pde import Problem
+from m3h3.ode import *
 
 
 class Stimulus(UserExpression):
@@ -47,7 +48,7 @@ class ElectroProblem(Problem):
         """
         model = self.parameters['cell_model']
         if model == "Tentusscher_panfilov_2006_M_cell":
-            return cbcbeat.Tentusscher_panfilov_2006_epi_cell()
+            return Tentusscher_panfilov_2006_M_cell()
 
 
     def _init_form(self, **kwargs):
