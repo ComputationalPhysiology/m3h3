@@ -54,7 +54,7 @@ parameters.set_electro_parameters()
 eparam = parameters[str(Physics.ELECTRO)]
 eparam['M_i'] = 1.0
 eparam['M_e'] = 2.0
-eparam['I_s'].update({'period': 400, 'amplitude': 100})
+eparam['I_s'].update({'period': 400, 'amplitude': 100, 'duration': 5})
 eparam['dt'] = 1e-3
 
 starttime = parameters['start_time']
@@ -66,17 +66,12 @@ steps = int((endtime-starttime)/dt)
 # Setup simulation
 model = M3H3(geo, parameters, time=time)
 
-# Setup simulation protocol
-stim_period = 400
-stimulus = Stimulus(pacing_markers, amplitude=100, period=stim_period,
-                                                duration=5, t=time, degree=1)
-model.add_stimulus(stimulus)
-
 # File for output
 f = df.XDMFFile(comm, "demo_electrophysiology.xdmf")
 f.parameters["flush_output"] = True
 f.parameters["rewrite_function_mesh"] = True
 f.parameters["functions_share_mesh"] = True
+
 
 # Loop over time
 for step in range(steps):
