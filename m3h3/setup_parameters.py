@@ -114,25 +114,31 @@ class Parameters(df.Parameters):
 
         # Set default parameters
         electro.add("dt", 1e-3)
+        electro.add("theta", 0.5)
         electro.add("polynomial_degree", 1)
+        electro.add("use_average_u_constraint", False)
         electro.add("M_i", 1.0)
         electro.add("M_e", 2.0)
+        electro.add("I_a", 0.0)
+        electro.add(df.Parameters("I_s"))
+        electro["I_s"].add("period", 0)
+        electro["I_s"].add("amplitude", 0)
+        electro["I_s"].add("duration", 5)
         electro.add("cell_model", "Tentusscher_panfilov_2006_M_cell")
+        electro.add("pde_model", "bidomain")
 
         # Add default parameters from both LU and Krylov solvers
         electro.add(LUSolver.default_parameters())
         electro.add(PETScKrylovSolver.default_parameters())
 
         electro.add(cbcbeat.SplittingSolver.default_parameters())
-        electro["SplittingSolver"]["theta"] = 0.5
-        electro["SplittingSolver"]["pde_solver"] = "bidomain"
-        electro["SplittingSolver"]["CardiacODESolver"]["scheme"] = "RL1"
-        electro["SplittingSolver"]["BidomainSolver"]["linear_solver_type"] =\
-                                                                    "iterative"
-        electro["SplittingSolver"]["BidomainSolver"]["algorithm"] = "cg"
-        electro["SplittingSolver"]["BidomainSolver"]["preconditioner"] =\
-                                                                    "petsc_amg"
-        electro["SplittingSolver"]["enable_adjoint"] = False
+        electro.add(df.Parameters("ODESolver"))
+        electro["ODESolver"].add("scheme", "RL1")
+        
+        electro.add(df.Parameters("PDESolver"))
+        electro["PDESolver"].add("linear_solver_type", "iterative")
+        electro["PDESolver"].add("linear_solver_method", "cg")
+        electro["PDESolver"].add("preconditioner", "petsc_amg")
 
         self.add(electro)
 
