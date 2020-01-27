@@ -45,7 +45,7 @@ class ElectroProblem(Problem):
         self.time = time
         self._init_fields()
         self._init_form(**kwargs)
-        self._set_initial_conditions()
+        # self._set_initial_conditions()
         self.cell_model = self.get_cell_model()
 
 
@@ -124,14 +124,14 @@ class ElectroProblem(Problem):
         self._form += I_a*q*dx
 
         # stimulus
-        stim_marker = self.geometry.markers['STIMULUS']
-        I_s = Stimulus(self.geometry.markers, stim_marker,
-                        amplitude=self.parameters["I_s"]['amplitude'],
-                        period=self.parameters["I_s"]['amplitude'],
-                        duration=self.parameters["I_s"]['duration'],
-                        t=self.time, degree=1)
-        self._form = I_s*w*dx
-
+        if 'STIMULUS' in self.geometry.markers.keys():
+            stim_marker = self.geometry.markers['STIMULUS']
+            I_s = Stimulus(self.geometry.markers, stim_marker,
+                            amplitude=self.parameters["I_s"]['amplitude'],
+                            period=self.parameters["I_s"]['amplitude'],
+                            duration=self.parameters["I_s"]['duration'],
+                            t=self.time, degree=1)
+            self._form += I_s*w*dx
 
 
     def get_solution_fields(self):
