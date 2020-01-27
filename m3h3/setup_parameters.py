@@ -127,18 +127,10 @@ class Parameters(df.Parameters):
         electro.add("cell_model", "Tentusscher_panfilov_2006_M_cell")
         electro.add("pde_model", "bidomain")
 
-        # Add default parameters from both LU and Krylov solvers
-        electro.add(LUSolver.default_parameters())
-        electro.add(PETScKrylovSolver.default_parameters())
-
-        electro.add(cbcbeat.SplittingSolver.default_parameters())
         electro.add(df.Parameters("ODESolver"))
         electro["ODESolver"].add("scheme", "RL1")
-        
-        electro.add(df.Parameters("PDESolver"))
-        electro["PDESolver"].add("linear_solver_type", "iterative")
-        electro["PDESolver"].add("linear_solver_method", "cg")
-        electro["PDESolver"].add("preconditioner", "petsc_amg")
+
+        electro.add(df.LinearVariationalSolver.default_parameters())
 
         self.add(electro)
 

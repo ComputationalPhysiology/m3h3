@@ -107,7 +107,6 @@ class ElectroProblem(Problem):
         v_ = self.prev_current
         k = Constant(1/dt)
         t = float(self.time)
-        self.time.assign(t + theta*dt)
 
         # bidomain equation
         Vmid = theta*v + (1-theta)*v_
@@ -133,13 +132,6 @@ class ElectroProblem(Problem):
                             t=self.time, degree=1)
             self._form += I_s*w*dx
 
-        # return to previous implementation for now until we update solver
-        cell_model = self.get_cell_model()
-        cardiac_model = cbcbeat.CardiacModel(self.geometry.mesh, self.time,
-                                                        M_i, M_e, cell_model)
-        self._form = cbcbeat.SplittingSolver(cardiac_model,
-                                    params=self.parameters["SplittingSolver"])
 
-
-    def get_solution_fields(self):
+    def _get_solution_fields(self):
         return (self.prev_current, self.solution)
