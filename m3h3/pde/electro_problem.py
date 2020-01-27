@@ -136,7 +136,7 @@ class ElectroProblem(Problem):
         # return to previous implementation for now until we update solver
         cell_model = self.get_cell_model()
         cardiac_model = cbcbeat.CardiacModel(self.geometry.mesh, self.time,
-                                        M_i, M_e, cell_model, **model_kwargs)
+                                                        M_i, M_e, cell_model)
         self._form = cbcbeat.SplittingSolver(cardiac_model,
                                     params=self.parameters["SplittingSolver"])
 
