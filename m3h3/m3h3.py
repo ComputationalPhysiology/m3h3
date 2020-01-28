@@ -5,10 +5,8 @@ from dolfin import (Constant, Parameters)
 from geometry import HeartGeometry, MultiGeometry
 
 from m3h3.setup_parameters import Parameters, Physics
-from m3h3.pde import (ElectroProblem, SolidProblem, FluidProblem,
-                        PorousProblem)
-from m3h3.solver import (ElectroSolver, SolidSolver, FluidSolver,
-                        PorousSolver)
+from m3h3.pde import *
+from m3h3.pde.solver import *
 
 
 class M3H3(object):
@@ -38,29 +36,34 @@ class M3H3(object):
             self.num_steps, self.max_dt = self._get_num_steps()
 
         time = float(self.time)
-        solution_fields = []
+        solution_fields = self.get_solution_fields()
+
         if Physics.ELECTRO in self.physics:
             for _ in range(self.num_steps[Physics.ELECTRO]):
-                self.electro_solver.step()
+                electro_fields = solution_fields[str(Physics.ELECTRO)]
+                self.electro_solver.step(electro_fields[1])
+
         if Physics.SOLID in self.physics:
             for _ in range(self.num_steps[Physics.SOLID]):
                 self.solid_solver.step()
+
         if Physics.FLUID in self.physics:
             for _ in range(self.num_steps[Physics.FLUID]):
                 self.fluid_solver.step()
+
         if Physics.POROUS in self.physics:
             for _ in range(self.num_steps[Physics.POROUS]):
                 self.porous_solver.step()
                 
-        solution_fields = self.get_solution_fields()
         self.time.assign(time + self.max_dt)
         return time, solution_fields
 
 
     def get_solution_fields(self):
-        solution_fields = []
+        solution_fields = {}
         if Physics.ELECTRO in self.physics:
-            solution_fields.extend(self.electro_problem._get_solution_fields())
+            solution_fields[str(Physics.ELECTRO)] =\
+                                    self.electro_problem._get_solution_fields()
         if Physics.SOLID in self.physics:
             pass
         if Physics.FLUID in self.physics:
@@ -68,6 +71,12 @@ class M3H3(object):
         if Physics.POROUS in self.physics:
             pass
         return solution_fields
+
+
+    def add_stimulus(self, stimulus):
+        assert hasattr(self, 'electro_problem'), \
+            "Cannot add stimulus if electrophysiology has not been set up."
+        self.electro_problem.add_stimulus(stimulus)
 
 
     def _get_num_steps(self):
@@ -123,18 +132,21 @@ class M3H3(object):
                                         self.time,
                                         self.parameters[str(Physics.ELECTRO)],
                                         **kwargs)
+            
         if Physics.SOLID in self.physics:
             self.solid_problem = SolidProblem(
                                         self.geometries[Physics.SOLID], 
                                         self.time,
                                         self.parameters[str(Physics.SOLID)],
                                         **kwargs)
+
         if Physics.FLUID in self.physics:
             self.fluid_problem = FluidProblem(
                                         self.geometries[Physics.FLUID],
                                         self.time,
                                         self.parameters[str(Physics.FLUID)],
                                         **kwargs)
+
         if Physics.POROUS in self.physics:
             self.porous_problem = PorousProblem(
                                         self.geometries[Physics.POROUS],
@@ -145,24 +157,30 @@ class M3H3(object):
 
     def _setup_solvers(self, **kwargs):
         interval = (self.parameters['start_time'], self.parameters['end_time'])
+        solution_fields = self.get_solution_fields()
+
         if Physics.ELECTRO in self.physics:
-            parameters = self.parameters[str(Physics.ELECTRO)]
-            self.electro_solver = ElectroSolver(
-                                    self.electro_problem._form, self.time,
-                                    interval, parameters['dt'], parameters,
-                                    **kwargs)
+            elabel = str(Physics.ELECTRO)
+            electro_fields = solution_fields[elabel]
+            parameters = self.parameters[elabel]['linear_variational_solver']
+            self.electro_solver = BasicBidomainSolver(self.time,
+                                    self.electro_problem._form, electro_fields,
+                                    parameters, **kwargs)
+
         if Physics.SOLID in self.physics:
             parameters = self.parameters[str(Physics.SOLID)]
             self.solid_solver = SolidSolver(
                                     self.solid_problem._form, self.time,
                                     interval, parameters['dt'], parameters,
                                     **kwargs)
+
         if Physics.FLUID in self.physics:
             parameters = self.parameters[str(Physics.FLUID)]
             self.fluid_solver = FluidSolver(
                                     self.fluid_problem._form, self.time,
                                     interval, parameters['dt'], parameters,
                                     **kwargs)
+
         if Physics.POROUS in self.physics:
             parameters = self.parameters[str(Physics.POROUS)]
             self.porous_solver = PorousSolver(
