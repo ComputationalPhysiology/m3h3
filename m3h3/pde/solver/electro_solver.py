@@ -29,7 +29,7 @@ class BasicBidomainSolver(object):
         created for you, initialized to zero.
 
       """
-    def __init__(self, time, form, solution_fields, parameters):
+    def __init__(self, time, form, solution_fields, parameters, *args, **kwargs):
 
         self._nullspace_basis = None
 
