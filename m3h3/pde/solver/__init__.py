@@ -4,5 +4,4 @@ from m3h3.pde.solver.electro_solver import BasicBidomainSolver
 # from m3h3.pde.solver.fluid_solver import FluidSolver
 # from m3h3.pde.solver.porous_solver import PorousSolver
 
-__all__ = ['BasicBidomainSolver', 'SolidSolver', 'FluidSolver',
-            'PorousSolver']
+__all__ = ['BasicBidomainSolver']
